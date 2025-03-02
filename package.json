@@ -1,0 +1,249 @@
+{
+  "name": "opentips",
+  "displayName": "OpenTips",
+  "description": "Get AI-powered coding tips for your project, as you code",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.96.0",
+    "node": "^22.13.1"
+  },
+  "extensionDependencies": [
+    "ms-python.python"
+  ],
+  "license": "GPL-3.0-only",
+  "repository": "git@github.com:sgtairraid/vscode-opentips.git",
+  "homepage": "https://github.com/sgtairraid/vscode-opentips",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "publisher": "opentips",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "opentips-panel",
+          "title": "OpenTips",
+          "icon": "resources/sun.svg",
+          "badge": {
+            "tooltip": "Number of available tips"
+          }
+        }
+      ]
+    },
+    "views": {
+      "opentips-panel": [
+        {
+          "id": "opentips.tipList",
+          "name": "Tip List",
+          "type": "tree"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "opentips.setAnthropicKey",
+        "title": "OpenTips: Set Anthropic API Key"
+      },
+      {
+        "command": "opentips.showAnthropicKeyStatus",
+        "title": "OpenTips: Show Anthropic API Key Status"
+      },
+      {
+        "command": "opentips.clearAnthropicKey",
+        "title": "OpenTips: Clear Anthropic API Key"
+      },
+      {
+        "command": "opentips.showSetupWalkthrough",
+        "title": "OpenTips: Open Setup Walkthrough"
+      },
+      {
+        "command": "opentips.showLanguageModelWalkthrough",
+        "title": "OpenTips: Open Language Model Walkthrough"
+      },
+      {
+        "command": "opentips.installPackage",
+        "title": "OpenTips: Install opentips Python Package"
+      },
+      {
+        "command": "opentips.title.refreshTips",
+        "title": "Refresh Tips",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "opentips.context.applyTip",
+        "title": "Apply Tip",
+        "icon": "$(code)"
+      },
+      {
+        "command": "opentips.context.explainTip",
+        "title": "Explain Tip",
+        "icon": "$(question)"
+      },
+      {
+        "command": "opentips.context.deleteTip",
+        "title": "Delete Tip",
+        "icon": "$(trash)"
+      }
+    ],
+    "configuration": {
+      "title": "OpenTips",
+      "properties": {
+        "opentips.serviceDirectory": {
+          "type": "string",
+          "description": "Directory in which to run the RPC service (for development only)"
+        },
+        "opentips.rpcPort": {
+          "type": "number",
+          "description": "Port number for RPC server (for development only)"
+        },
+        "opentips.copilotModelProvider": {
+          "type": "string",
+          "description": "LLM model provider to use with Copilot AI (configured automatically on first use)"
+        }
+      }
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "opentips.title.refreshTips",
+          "when": "view == opentips.tipList",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "opentips.context.applyTip",
+          "when": "view == opentips.tipList && viewItem == opentips.tip",
+          "group": "inline"
+        },
+        {
+          "command": "opentips.context.explainTip",
+          "when": "view == opentips.tipList && viewItem == opentips.tip",
+          "group": "inline"
+        },
+        {
+          "command": "opentips.context.deleteTip",
+          "when": "view == opentips.tipList && viewItem == opentips.tip",
+          "group": "inline"
+        }
+      ]
+    },
+    "walkthroughs": [
+      {
+        "id": "setup",
+        "title": "OpenTips Setup",
+        "description": "Setup OpenTips and get AI-powered coding tips for your project",
+        "steps": [
+          {
+            "id": "opentips.service.installationOverview",
+            "title": "Installation overview",
+            "description": "Overview of the installation process for OpenTips",
+            "media": {
+              "markdown": "./walkthroughs/service/installation-overview.md"
+            }
+          },
+          {
+            "id": "opentips.service.selectInterpreter",
+            "title": "Select Python interpreter",
+            "description": "Select the Python interpreter for your project",
+            "media": {
+              "markdown": "./walkthroughs/service/python-select-interpreter.md"
+            }
+          },
+          {
+            "id": "opentips.service.python.installDependencies",
+            "title": "Install 'opentips' package",
+            "description": "Install the Python 'opentips' package in your project",
+            "media": {
+              "markdown": "./walkthroughs/service/python-install-dependencies.md"
+            }
+          },
+          {
+            "id": "opentips.service.getTips",
+            "title": "Get tips",
+            "description": "Visit OpenTips in the Activity Bar to get AI-powered coding tips for your project",
+            "media": {
+              "markdown": "./walkthroughs/service/opentips-get-tips.md"
+            }
+          },
+          {
+            "id": "opentips.service.useTips",
+            "title": "View, apply, explain, and dismiss tips",
+            "description": "View tips in the code, apply tips automatically, explain tips, and dismiss tips you don't need",
+            "media": {
+              "markdown": "./walkthroughs/service/opentips-apply-tips.md"
+            }
+          }
+        ]
+      },
+      {
+        "id": "languageModel",
+        "title": "OpenTips Language Model",
+        "description": "Configure the OpenTips Language Model provider",
+        "steps": [
+          {
+            "id": "opentips.languageModel.overview",
+            "title": "Language Model Overview",
+            "description": "Overview of the Language Model configuration process for OpenTips",
+            "media": {
+              "markdown": "./walkthroughs/language-model/overview.md"
+            }
+          },
+          {
+            "id": "opentips.languageModel.copilot",
+            "title": "Use GitHub Copilot",
+            "description": "Configure OpenTips to use GitHub Copilot as your language model provider",
+            "media": {
+              "markdown": "./walkthroughs/language-model/copilot-setup.md"
+            }
+          },
+          {
+            "id": "opentips.languageModel.anthropic",
+            "title": "Use Anthropic Claude",
+            "description": "Configure OpenTips to use Anthropic's Claude as your language model provider",
+            "media": {
+              "markdown": "./walkthroughs/language-model/anthropic-setup.md"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run build",
+    "compile": "yarn run check-types && yarn run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "build": "yarn run check-types && yarn run lint && node esbuild.js --production",
+    "package": "vsce package",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "22.13.1",
+    "@types/vscode": "^1.96.0",
+    "@typescript-eslint/eslint-plugin": "^8.22.0",
+    "@typescript-eslint/parser": "^8.22.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^3.2.2",
+    "esbuild": "^0.24.2",
+    "eslint": "^9.19.0",
+    "jest": "^29.7.0",
+    "npm-run-all": "^4.1.5",
+    "ts-jest": "^29.2.6",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "json-rpc-2.0": "^1.7.0"
+  }
+}

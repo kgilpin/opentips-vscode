@@ -1,0 +1,9 @@
+out
+dist
+node_modules
+coverage
+.vscode-test/
+*.vsix
+.aider*
+chat_history.txt
+.vscode
