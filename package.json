@@ -11,12 +11,16 @@
     "ms-python.python"
   ],
   "license": "GPL-3.0-only",
-  "repository": "git@github.com:sgtairraid/vscode-opentips.git",
-  "homepage": "https://github.com/sgtairraid/vscode-opentips",
+  "repository": "https://github.com/sgtairraid/opentips-vscode",
+  "homepage": "https://github.com/sgtairraid/opentips-vscode",
   "categories": [
-    "Other"
+    "AI",
+    "Education",
+    "Programming Languages"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
   "publisher": "opentips",
   "contributes": {
@@ -55,8 +59,12 @@
         "title": "OpenTips: Clear Anthropic API Key"
       },
       {
-        "command": "opentips.showSetupWalkthrough",
-        "title": "OpenTips: Open Setup Walkthrough"
+        "command": "opentips.showUsageWalkthrough",
+        "title": "OpenTips: Open Usage Walkthrough"
+      },
+      {
+        "command": "opentips.showServiceInstallationWalkthrough",
+        "title": "OpenTips: Open Service Installation Walkthrough"
       },
       {
         "command": "opentips.showLanguageModelWalkthrough",
@@ -132,16 +140,55 @@
     },
     "walkthroughs": [
       {
-        "id": "setup",
-        "title": "OpenTips Setup",
-        "description": "Setup OpenTips and get AI-powered coding tips for your project",
+        "id": "usage",
+        "title": "Using OpenTips",
+        "description": "Learn how to use OpenTips to get AI-powered coding tips for your project",
+        "steps": [
+          {
+            "id": "opentips.usage.overview",
+            "title": "OpenTips overview",
+            "description": "Get started  with OpenTips",
+            "media": {
+              "markdown": "./walkthroughs/usage/overview.md"
+            }
+          },
+          {
+            "id": "opentips.service.getTips",
+            "title": "Get tips",
+            "description": "Visit OpenTips in the Activity Bar to get AI-powered coding tips for your project",
+            "media": {
+              "markdown": "./walkthroughs/usage/get-tips.md"
+            }
+          },
+          {
+            "id": "opentips.service.useTips",
+            "title": "View, apply, explain, and dismiss tips",
+            "description": "View tips in the code, apply tips automatically, explain tips, and dismiss tips you don't need",
+            "media": {
+              "markdown": "./walkthroughs/usage/apply-tips.md"
+            }
+          },
+          {
+            "id": "opentips.service.troubleshooting",
+            "title": "Troubleshooting tips",
+            "description": "Get troubleshooting steps if tips are not showing correctly.",
+            "media": {
+              "markdown": "./walkthroughs/usage/troubleshooting.md"
+            }
+          }
+        ]
+      },
+      {
+        "id": "service",
+        "title": "OpenTips Service Installation",
+        "description": "Setup the OpenTips Python service",
         "steps": [
           {
             "id": "opentips.service.installationOverview",
-            "title": "Installation overview",
+            "title": "Service installation overview",
             "description": "Overview of the installation process for OpenTips",
             "media": {
-              "markdown": "./walkthroughs/service/installation-overview.md"
+              "markdown": "./walkthroughs/service/overview.md"
             }
           },
           {
@@ -158,22 +205,6 @@
             "description": "Install the Python 'opentips' package in your project",
             "media": {
               "markdown": "./walkthroughs/service/python-install-dependencies.md"
-            }
-          },
-          {
-            "id": "opentips.service.getTips",
-            "title": "Get tips",
-            "description": "Visit OpenTips in the Activity Bar to get AI-powered coding tips for your project",
-            "media": {
-              "markdown": "./walkthroughs/service/opentips-get-tips.md"
-            }
-          },
-          {
-            "id": "opentips.service.useTips",
-            "title": "View, apply, explain, and dismiss tips",
-            "description": "View tips in the code, apply tips automatically, explain tips, and dismiss tips you don't need",
-            "media": {
-              "markdown": "./walkthroughs/service/opentips-apply-tips.md"
             }
           }
         ]

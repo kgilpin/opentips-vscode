@@ -33,7 +33,10 @@ Click on the trash can icon 🗑️, or `Dismiss` link to remove the tip from th
 
 ### Auto-suggestion
 
-As you code, OpenTips looks at the current Git diff of the project and provides tips based on the code you are writing. Tips are displayed in a dedicated panel in the editor, and they are also highlighted within the code itself.
+As you code, OpenTips looks at your work-in-progress and provides tips based on the code you are writing. Tips are displayed in a dedicated panel in the editor, and they are also highlighted within the code itself.
+
+Specifically, OpenTips looks at the differences between your working branch and the main branch (which should be
+named `main`, `master`, or `develop`). Therefore, your project must be using Git in order to use OpenTips.
 
 ### Auto-hiding
 
@@ -60,13 +63,15 @@ The Python service is provided as a separate package, `opentips`, which will be 
 
 ## Commands
 
-OpenTips provides several commands that you can access through the Command Palette (Ctrl+Shift+P or Cmd+Shift+P):
+OpenTips provides several commands that you can access through the Command Palette (Ctrl+Shift+P or Cmd+Shift+P).
+Once you've opened the Command Palette, start typing "OpenTips" to see the available commands:
 
 ### Setup and Configuration
 
-- **OpenTips: Open Setup Walkthrough** - Start the guided setup process for OpenTips
+- **OpenTips: Open Usage Walkthrough** - Show the usage walkthrough and feature tour
+- **OpenTips: Open Service Installation Walkthrough** - Get help configuring and installing the Python backend service
 - **OpenTips: Open Language Model Walkthrough** - Get help configuring your preferred language model
-- **OpenTips: Install opentips Python Package** - Install or update the required Python backend package
+- **OpenTips: Install opentips Python Package** - Install or update the required Python backend service package
 
 ### API Key Management
 
@@ -104,29 +109,9 @@ cd opentips-vscode
 # Install dependencies
 yarn
 
-# Package the extension
+# Package the extension, outputting opentips-x.y.z.vsix
 yarn run package
 ```
-
-# Adding VSIX Installation Instructions
-
-````markdown
-### Manual Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/SgtAirRaid/opentips-vscode.git
-
-# Navigate to the directory
-cd opentips-vscode
-
-# Install dependencies
-yarn
-
-# Package the extension
-yarn run package
-```
-````
 
 Once the packaging is complete, install the generated .vsix file:
 

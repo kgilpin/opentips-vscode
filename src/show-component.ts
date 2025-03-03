@@ -2,8 +2,13 @@ import { commands, ExtensionContext } from "vscode";
 
 export function enrollShowComponents(context: ExtensionContext) {
   context.subscriptions.push(
-    commands.registerCommand("opentips.showSetupWalkthrough", () =>
-      commands.executeCommand("workbench.action.openWalkthrough", "opentips.opentips#setup", false)
+    commands.registerCommand("opentips.showUsageWalkthrough", () =>
+      commands.executeCommand("workbench.action.openWalkthrough", "opentips.opentips#usage", false)
+    )
+  );
+  context.subscriptions.push(
+    commands.registerCommand("opentips.showServiceInstallationWalkthrough", () =>
+      commands.executeCommand("workbench.action.openWalkthrough", "opentips.opentips#service", false)
     )
   );
   context.subscriptions.push(
