@@ -268,6 +268,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "22.13.1",
     "@types/vscode": "^1.96.0",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
@@ -283,6 +284,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "js-yaml": "^4.1.0",
     "json-rpc-2.0": "^1.7.0"
   }
 }

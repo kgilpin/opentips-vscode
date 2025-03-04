@@ -8,6 +8,7 @@ import {
   SpawnedProcess,
   IRPCProcessLaunchContext,
 } from "../types/rpc-process";
+import { IFileSystem } from "../types/system";
 
 export function isRPCProcessLaunchError(
   obj: RPCProcessLaunchError | VirtualenvRpcProcess

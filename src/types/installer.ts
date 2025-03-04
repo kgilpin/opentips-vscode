@@ -1,26 +1,12 @@
-export type CommandResult = {
+export interface IInstallResult {
   succeeded: boolean;
-  errorMessage?: string;
-};
-
-export type ExecError = {
-  code: number;
-  killed: boolean;
-  signal: string | null;
-  cmd: string;
-  stdout: string;
-  stderr: string;
-};
-
-export type PlatformConfig = {
-  scriptName: string;
-  commandRunner: string;
-};
-
-export interface IInstaller {
-  install(): Promise<void>;
+  error?: string;
 }
 
-export function isExecError(error: any): error is ExecError {
-  return error && typeof error.code === "number" && error.cmd;
+export interface IInstallerFeedback {
+  step(name: string): void;
+}
+
+export interface IInstaller {
+  install(workingDirectory: string, feedback: IInstallerFeedback): Promise<IInstallResult>;
 }

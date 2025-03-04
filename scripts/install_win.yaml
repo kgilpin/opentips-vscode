@@ -1,0 +1,47 @@
+---
+# Creates a Python virtual environment and installs OpenTips
+# To use the virtual environment:
+#   .\venv\Scripts\Activate.ps1
+name: Install OpenTips Windows Environment
+commands:
+  - name: Checking that Python exists
+    command: |
+      if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
+          Write-Host "Python is not found. Install Python from https://apps.microsoft.com/detail/9NRWMJP3717K"
+          exit 1
+      } else {
+          Write-Host "Python found: $(python --version)"
+          Write-Host "Python path: $((Get-Command python).Source)"
+      }
+  - name: Checking Python version
+    command: |
+      $pythonVersion = python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"
+      $minVersion = "3.11"
+
+      Write-Host "Python version: $pythonVersion" -ForegroundColor Cyan
+
+      if ([System.Version]$pythonVersion -lt [System.Version]$minVersion) {
+        Write-Error "Python version $pythonVersion is not supported. OpenTips requires Python $minVersion or higher."
+        Write-Host "Please install Python $minVersion or later from https://www.python.org/downloads/" -ForegroundColor Yellow
+        exit 1
+      }
+
+  - name: Checking that venv module is available
+    command: |
+      python -c "import venv" 2>$null
+      if ($LASTEXITCODE -ne 0) {
+        Write-Error "Python venv module not available. Please reinstall Python with all optional features."
+        exit 1
+      }
+
+  - name: Checking that pip is available
+    command: python -m ensurepip --upgrade
+  
+  - name: Installing or upgrading pip
+    command: python -m pip install --upgrade pip
+
+  - name: Creating virtual environment
+    command: python -m venv venv
+
+  - name: Installing opentips package
+    command: venv\Scripts\pip.exe install --ignore-requires-python opentips

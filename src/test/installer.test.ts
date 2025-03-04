@@ -1,145 +1,199 @@
 import { CoreInstaller } from "../lib/installer";
-import { IExtensionLoader, INotifier } from "../types/platform";
-import { IFileSystem, IProcessRunner } from "../types/system";
-import { logger } from "../extension-point/logger";
 
-jest.mock("../logger", () => ({
-  logger: jest.fn(),
+// Mock the installWindows function
+jest.mock("../installer/install-windows", () => ({
+  installWindows: jest.fn(),
 }));
 
-describe("CoreInstaller Test Suite", () => {
-  let mockExtensionLoader: jest.Mocked<IExtensionLoader>;
-  let mockNotifier: jest.Mocked<INotifier>;
-  let mockFileSystem: jest.Mocked<IFileSystem>;
-  let mockProcessRunner: jest.Mocked<IProcessRunner>;
-  let installer: CoreInstaller;
+import { installWindows } from "../installer/install-windows";
 
-  // Helper function to create command execution error
-  function createCommandError(message: string, code: number, stderr: string): Error {
-    const error = new Error(message);
-    (error as any).code = code;
-    (error as any).stderr = stderr;
-    return error;
-  }
+let mockFileSystem: {
+  getHomeDir: jest.Mock;
+  existsSync: jest.Mock;
+  statSync: jest.Mock;
+};
+let mockProcessRunner: {
+  execute: jest.Mock;
+  platform: NodeJS.Platform;
+};
+let mockLockFile: jest.Mock;
+let mockLogger: jest.Mock;
+let mockInstallWindows: jest.MockedFunction<typeof installWindows>;
+let installer: CoreInstaller;
+let mockFeedback = {
+  step: jest.fn(),
+};
 
+describe("CoreInstaller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockExtensionLoader = {
-      getExtension: jest.fn(),
-    };
 
-    mockNotifier = {
-      showError: jest.fn(),
-      showSuccess: jest.fn(),
-    };
+    // Initialize mockInstallWindows here with other mocks
+    mockInstallWindows = installWindows as jest.MockedFunction<typeof installWindows>;
+    mockInstallWindows.mockResolvedValue({ succeeded: true });
 
     mockFileSystem = {
-      existsSync: jest.fn(),
       getHomeDir: jest.fn().mockReturnValue("/home/user"),
+      existsSync: jest.fn().mockReturnValue(true),
+      statSync: jest.fn().mockReturnValue({ isDirectory: () => true }),
     };
 
     mockProcessRunner = {
+      platform: "darwin",
       execute: jest.fn(),
     };
 
-    installer = new CoreInstaller(mockExtensionLoader, mockNotifier, mockFileSystem, mockProcessRunner);
+    mockLogger = jest.fn();
+    mockFeedback.step = jest.fn();
+    mockLockFile = jest.fn().mockImplementation((logger, lockFile, operation) => operation());
+
+    installer = new CoreInstaller("/extension/path", mockFileSystem, mockProcessRunner, mockLockFile, mockLogger);
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
-  it("successful installation on macOS", async () => {
-    // Mock platform
-    Object.defineProperty(process, "platform", { value: "darwin" });
-
-    // Mock extension exists
-    mockExtensionLoader.getExtension.mockReturnValue({ extensionPath: "/ext/path" });
-    mockFileSystem.existsSync.mockReturnValue(true);
-    mockProcessRunner.execute.mockResolvedValue({ stdout: "success", stderr: "" });
-
-    await installer.install();
-
-    expect(mockProcessRunner.execute).toHaveBeenCalledWith('bash "/ext/path/scripts/install_macos.sh"', {
-      cwd: "/home/user/.opentips",
+  describe("initialization", () => {
+    it("should create installer with correct default working directory", () => {
+      expect(installer.defaultWorkingDirectory).toBe("/home/user/.opentips");
+      expect(mockFileSystem.getHomeDir).toHaveBeenCalled();
     });
-    expect(mockNotifier.showSuccess).toHaveBeenCalledWith("OpenTips package installed successfully");
   });
 
-  it("handles missing extension", async () => {
-    mockExtensionLoader.getExtension.mockReturnValue(undefined);
+  describe("input validation", () => {
+    it("should fail if working directory does not exist", async () => {
+      mockFileSystem.existsSync.mockReturnValue(false);
 
-    await expect(installer.install()).rejects.toThrow("Could not find OpenTips extension");
-  });
+      const result = await installer.install("/workspace", mockFeedback);
 
-  it("handles unsupported platform", async () => {
-    Object.defineProperty(process, "platform", { value: "unknown" });
-    mockExtensionLoader.getExtension.mockReturnValue({ extensionPath: "/ext/path" });
-
-    await installer.install();
-
-    expect(mockNotifier.showError).toHaveBeenCalledWith("Unsupported platform: unknown");
-  });
-
-  it("handles missing installation script", async () => {
-    Object.defineProperty(process, "platform", { value: "darwin" });
-    mockExtensionLoader.getExtension.mockReturnValue({ extensionPath: "/ext/path" });
-    mockFileSystem.existsSync.mockReturnValue(false);
-
-    await installer.install();
-
-    expect(mockNotifier.showError).toHaveBeenCalledWith(expect.stringContaining("Installation script not found"));
-  });
-
-  it("handles installation failure", async () => {
-    Object.defineProperty(process, "platform", { value: "darwin" });
-    mockExtensionLoader.getExtension.mockReturnValue({ extensionPath: "/ext/path" });
-    mockFileSystem.existsSync.mockReturnValue(true);
-
-    const error = createCommandError("Command failed", 1, "Installation failed");
-    mockProcessRunner.execute.mockRejectedValue(error);
-
-    await installer.install();
-
-    expect(mockNotifier.showError).toHaveBeenCalledWith(expect.stringContaining("Failed to install opentips package"));
-  });
-
-  it("successful installation on Windows", async () => {
-    Object.defineProperty(process, "platform", { value: "win32" });
-    mockExtensionLoader.getExtension.mockReturnValue({ extensionPath: "/ext/path" });
-    mockFileSystem.existsSync.mockReturnValue(true);
-    mockProcessRunner.execute.mockResolvedValue({ stdout: "success", stderr: "" });
-
-    await installer.install();
-
-    expect(mockProcessRunner.execute).toHaveBeenCalledWith('cmd.exe /c "/ext/path/scripts/install_win.bat"', {
-      cwd: "/home/user/.opentips",
+      expect(result.succeeded).toBe(false);
+      expect(result.error).toContain("does not exist");
+      expect(mockFileSystem.existsSync).toHaveBeenCalledWith("/workspace");
     });
-    expect(mockNotifier.showSuccess).toHaveBeenCalled();
+
+    it("should fail if working directory is not a directory", async () => {
+      mockFileSystem.statSync.mockReturnValue({ isDirectory: () => false });
+
+      const result = await installer.install("/workspace", mockFeedback);
+
+      expect(result.succeeded).toBe(false);
+      expect(result.error).toContain("is not a directory");
+      expect(mockFileSystem.statSync).toHaveBeenCalledWith("/workspace");
+    });
   });
 
-  it("logs command execution details", async () => {
-    Object.defineProperty(process, "platform", { value: "darwin" });
-    mockExtensionLoader.getExtension.mockReturnValue({ extensionPath: "/ext/path" });
-    mockFileSystem.existsSync.mockReturnValue(true);
-    mockProcessRunner.execute.mockResolvedValue({ stdout: "success", stderr: "" });
+  describe("platform-specific installation", () => {
+    describe("macOS", () => {
+      it("should successfully install", async () => {
+        mockProcessRunner.platform = "darwin";
+        mockProcessRunner.execute.mockResolvedValue({
+          succeeded: true,
+          stdout: "Installation successful",
+        });
 
-    await installer.install();
+        const result = await installer.install("/workspace", mockFeedback);
 
-    expect(logger).toHaveBeenCalledWith(expect.stringContaining("Executing command:"));
-    expect(logger).toHaveBeenCalledWith(expect.stringContaining("stdout: success"));
+        expect(result.succeeded).toBe(true);
+        expect(mockProcessRunner.execute).toHaveBeenCalledWith(
+          ["bash", "-c", "/extension/path/scripts/install_macos.sh"],
+          { cwd: "/workspace" }
+        );
+      });
+    });
+
+    describe("Linux", () => {
+      it("should successfully install", async () => {
+        mockProcessRunner.platform = "linux";
+        mockProcessRunner.execute.mockResolvedValue({
+          succeeded: true,
+          stdout: "Installation successful",
+        });
+
+        const result = await installer.install("/workspace", mockFeedback);
+
+        expect(result.succeeded).toBe(true);
+        expect(mockProcessRunner.execute).toHaveBeenCalledWith(
+          ["bash", "-c", "/extension/path/scripts/install_linux.sh"],
+          { cwd: "/workspace" }
+        );
+      });
+    });
+
+    describe("Windows", () => {
+      it("should successfully install", async () => {
+        mockProcessRunner.platform = "win32";
+        mockInstallWindows.mockResolvedValue({
+          succeeded: true,
+        });
+
+        const result = await installer.install("/workspace", mockFeedback);
+
+        expect(result.succeeded).toBe(true);
+        expect(mockInstallWindows).toHaveBeenCalledWith(
+          mockProcessRunner,
+          mockLogger,
+          mockFeedback,
+          "/extension/path/scripts/install_win.yaml",
+          "/workspace"
+        );
+      });
+    });
   });
 
-  it("logs installation errors", async () => {
-    Object.defineProperty(process, "platform", { value: "darwin" });
-    mockExtensionLoader.getExtension.mockReturnValue({ extensionPath: "/ext/path" });
-    mockFileSystem.existsSync.mockReturnValue(true);
+  describe("error handling", () => {
+    describe("platform support", () => {
+      it("should fail on unsupported platform", async () => {
+        mockProcessRunner.platform = "freebsd";
 
-    const error = createCommandError("Command failed", 1, "Installation failed");
-    mockProcessRunner.execute.mockRejectedValue(error);
+        const result = await installer.install("/workspace", mockFeedback);
 
-    await installer.install();
+        expect(result.succeeded).toBe(false);
+        expect(result.error).toContain("Unsupported platform: freebsd");
+        expect(mockProcessRunner.execute).not.toHaveBeenCalled();
+      });
+    });
 
-    expect(logger).toHaveBeenCalledWith(expect.stringContaining("Command failed"));
+    describe("script execution failures", () => {
+      it("should handle Unix script failure", async () => {
+        mockProcessRunner.platform = "linux";
+        mockProcessRunner.execute.mockResolvedValue({
+          succeeded: false,
+          stderr: "Permission denied",
+          error: "Command failed",
+        });
+
+        const result = await installer.install("/workspace", mockFeedback);
+
+        expect(result.succeeded).toBe(false);
+        expect(result.error).toBe("Command failed");
+        expect(mockLogger).toHaveBeenCalledWith(expect.stringContaining("stderr: Permission denied"));
+      });
+
+      it("should handle Windows script failure", async () => {
+        mockProcessRunner.platform = "win32";
+        mockInstallWindows.mockResolvedValue({
+          succeeded: false,
+          error: "PowerShell execution failed",
+        });
+
+        const result = await installer.install("/workspace", mockFeedback);
+
+        expect(result.succeeded).toBe(false);
+        expect(result.error).toBe("PowerShell execution failed");
+      });
+    });
+
+    describe("missing files", () => {
+      it("should report missing script file", async () => {
+        mockProcessRunner.platform = "darwin";
+        mockFileSystem.existsSync.mockImplementation((path: string) => {
+          return !path.includes("install_macos.sh");
+        });
+
+        const result = await installer.install("/workspace", mockFeedback);
+
+        expect(result.succeeded).toBe(false);
+        expect(result.error).toContain("Script not found for platform");
+        expect(mockLogger).toHaveBeenCalledWith(expect.stringContaining("Installation script not found"));
+        expect(mockProcessRunner.execute).not.toHaveBeenCalled();
+      });
+    });
   });
 });

@@ -28,6 +28,7 @@ import complete, { isCopilotLMProviderAvailable } from "./message-completion";
 import { enrollInstallPackage } from "./install-package";
 import { locateServiceDirectoryVirtualEnvDir } from "./configuration";
 import { spawn } from "child_process";
+import { NodeFileSystem } from "./system/node-system";
 
 const TIPS_LIMIT = 5;
 
@@ -203,9 +204,13 @@ export async function activate(context: vscode.ExtensionContext) {
     return new ChildProcess(process);
   };
 
+  const fileSystem = new NodeFileSystem();
+  const locateServiceDirectoryVirtualEnvDirWithFileSystemProvided = (workspaceFolder: string): string | undefined =>
+    locateServiceDirectoryVirtualEnvDir(fileSystem, workspaceFolder);
+
   const processLaunchContext: IRPCProcessLaunchContext = {
     getAnthropicApiKey: anthropic.getAnthropicApiKey.bind(anthropic),
-    locateServiceDirectoryVirtualEnvDir,
+    locateServiceDirectoryVirtualEnvDir: locateServiceDirectoryVirtualEnvDirWithFileSystemProvided,
     isCopilotLMProviderAvailable,
     onError: onRPCLaunchProcessError,
     onPortChanged: APP.portChanged.bind(APP),
@@ -221,7 +226,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // 2) Watch for Copilot to be available
   // 3) Support other LLM keys?
 
-  const tipDecorations = enrollApplyDecorations(context, (uri) => tipsModel.listTipsForFile(uri));
+  const tipDecorations = enrollApplyDecorations(context, tipsModel.listTipsForFile.bind(tipsModel));
   APP.reapplyDecorations = tipDecorations.reapplyDecorations;
   APP.applyDecorations = tipDecorations.applyDecorations;
 

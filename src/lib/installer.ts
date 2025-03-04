@@ -1,91 +1,166 @@
-import { join, resolve } from "node:path";
-import { CommandResult, isExecError, IInstaller, PlatformConfig } from "../types/installer";
-import { IExtensionLoader, INotifier } from "../types/platform";
-import { IFileSystem, IProcessRunner } from "../types/system";
-import { logger } from "../extension-point/logger";
+import { join } from "node:path";
+
+import { IInstaller, IInstallerFeedback, IInstallResult } from "../types/installer";
+import { Logger } from "../types/platform";
+import { IFileSystem, IProcessResult, IProcessRunner, WithLockFile } from "../types/system";
+import { installWindows } from "../installer/install-windows";
+
+const INSTALL_MACOS_SCRIPT = "install_macos.sh";
+const INSTALL_WIN_COMMANDS = "install_win.yaml";
+const INSTALL_LINUX_SCRIPT = "install_linux.sh";
+
+const SHELL_NAME = "bash";
+
+const SCRIPT_NAME_FOR_PLATFORM: Record<NodeJS.Platform, string | null> = {
+  darwin: INSTALL_MACOS_SCRIPT,
+  win32: INSTALL_WIN_COMMANDS,
+  linux: INSTALL_LINUX_SCRIPT,
+  aix: null,
+  android: null,
+  freebsd: null,
+  openbsd: null,
+  sunos: null,
+  haiku: null,
+  cygwin: null,
+  netbsd: null,
+};
 
 export class CoreInstaller implements IInstaller {
-  private static readonly INSTALL_MACOS_SCRIPT = "install_macos.sh";
-  private static readonly INSTALL_WIN_SCRIPT = "install_win.bat";
-  private static readonly INSTALL_LINUX_SCRIPT = "install_linux.sh";
+  public readonly defaultWorkingDirectory: string;
 
   constructor(
-    private readonly extensionLoader: IExtensionLoader,
-    private readonly notifier: INotifier,
+    private readonly extensionPath: string,
     private readonly fileSystem: IFileSystem,
-    private readonly processRunner: IProcessRunner
-  ) {}
+    private readonly processRunner: IProcessRunner,
+    private readonly withLockFile: WithLockFile<IInstallResult>,
+    private readonly logger: Logger
+  ) {
+    this.defaultWorkingDirectory = join(fileSystem.getHomeDir(), ".opentips");
+  }
 
-  private readonly platformConfig: Record<string, PlatformConfig> = {
-    win32: {
-      scriptName: CoreInstaller.INSTALL_WIN_SCRIPT,
-      commandRunner: "cmd.exe /c",
-    },
-    darwin: {
-      scriptName: CoreInstaller.INSTALL_MACOS_SCRIPT,
-      commandRunner: "bash",
-    },
-    linux: {
-      scriptName: CoreInstaller.INSTALL_LINUX_SCRIPT,
-      commandRunner: "bash",
-    },
-  };
+  public async install(workingDirectory: string, feedback: IInstallerFeedback): Promise<IInstallResult> {
+    this.logger(`[installer] Installing OpenTips package to ${workingDirectory}`);
 
-  private async executeAndLog(command: string): Promise<CommandResult> {
-    if (
-      ![CoreInstaller.INSTALL_MACOS_SCRIPT, CoreInstaller.INSTALL_WIN_SCRIPT, CoreInstaller.INSTALL_LINUX_SCRIPT].some(
-        (script) => command.includes(script)
-      )
-    ) {
-      throw new Error(`Invalid command: ${command}`);
+    if (!this.fileSystem.existsSync(workingDirectory)) {
+      const message = `${workingDirectory} does not exist.`;
+      this.logger(message);
+      return {
+        succeeded: false,
+        error: message,
+      };
     }
 
-    const workingDirectory = join(this.fileSystem.getHomeDir(), ".opentips");
-    const commandId = Math.random().toString(36).substring(7);
-    logger(`[${commandId}] Executing command: ${command}`);
-
+    let stat: { isDirectory(): boolean };
     try {
-      const { stdout, stderr } = await this.processRunner.execute(command, { cwd: workingDirectory });
-      if (stdout) logger(`[${commandId}] stdout: ${stdout}`);
-      if (stderr) logger(`[${commandId}] stderr: ${stderr}`);
-      return { succeeded: true };
-    } catch (error) {
-      if (isExecError(error)) {
-        const message = `Command '${command}' failed with code ${error.code}: ${error.stderr}`;
-        logger(`[${commandId}] ${message}`);
-        return { succeeded: false, errorMessage: message };
+      stat = this.fileSystem.statSync(workingDirectory);
+    } catch {
+      const message = `Failed to stat ${workingDirectory}.`;
+      this.logger(message);
+      return {
+        succeeded: false,
+        error: message,
+      };
+    }
+
+    if (!stat.isDirectory()) {
+      const message = `${workingDirectory} is not a directory.`;
+      this.logger(message);
+      return {
+        succeeded: false,
+        error: message,
+      };
+    }
+
+    const performInstallation = async (): Promise<IInstallResult> => {
+      let executionResult: IProcessResult;
+      const { platform } = this.processRunner;
+      if (platform === "win32") {
+        const scriptPath = this.resolveScriptPath(INSTALL_WIN_COMMANDS);
+        if (!scriptPath) {
+          return {
+            succeeded: false,
+            error: `Script not found for platform: ${platform}`,
+          };
+        }
+        executionResult = await installWindows(this.processRunner, this.logger, feedback, scriptPath, workingDirectory);
+      } else if (platform === "darwin" || platform === "linux") {
+        const scriptPath = this.resolveScriptPath(platform === "darwin" ? INSTALL_MACOS_SCRIPT : INSTALL_LINUX_SCRIPT);
+        if (!scriptPath) {
+          return {
+            succeeded: false,
+            error: `Script not found for platform: ${this.processRunner.platform}`,
+          };
+        }
+        executionResult = await this.executeInstallScriptForPlatform(workingDirectory);
+      } else {
+        return {
+          succeeded: false,
+          error: `Unsupported platform: ${platform}`,
+        };
       }
-      const message = error instanceof Error ? error.message : "Unknown error";
-      logger(`[${commandId}] ${message}`);
-      return { succeeded: false, errorMessage: message };
+
+      if (executionResult.succeeded) {
+        return { succeeded: true };
+      }
+
+      return {
+        succeeded: executionResult.succeeded,
+        error: executionResult.error,
+      };
+    };
+
+    const lockFilePath = join(workingDirectory, "install.lock");
+    try {
+      return await this.withLockFile(this.logger, lockFilePath, performInstallation);
+    } catch (error) {
+      return {
+        succeeded: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
     }
   }
 
-  public async install(): Promise<void> {
-    const extension = this.extensionLoader.getExtension("opentips.opentips");
-    if (!extension) {
-      throw new Error("Could not find OpenTips extension");
+  private async executeInstallScriptForPlatform(workingDirectory: string): Promise<IProcessResult> {
+    const { platform } = this.processRunner;
+    const scriptName = SCRIPT_NAME_FOR_PLATFORM[platform];
+    if (!scriptName) {
+      return {
+        succeeded: false,
+        error: `Unsupported platform: ${platform}`,
+      };
     }
 
-    const config = this.platformConfig[process.platform];
-    if (!config) {
-      this.notifier.showError(`Unsupported platform: ${process.platform}`);
-      return;
+    const scriptPath = this.resolveScriptPath(scriptName);
+    if (!scriptPath) {
+      return {
+        succeeded: false,
+        error: `Installation script not found for platform: ${platform}`,
+      };
     }
 
-    const scriptPath = resolve(extension.extensionPath, "scripts", config.scriptName);
+    const commandId = Math.random().toString(36).substring(7);
+    this.logger(`[${commandId}] Executing command: ${scriptPath}`);
+
+    const commands = [SHELL_NAME, "-c", scriptPath];
+    const processResult = await this.processRunner.execute(commands, { cwd: workingDirectory });
+    const { succeeded, stdout, stderr } = processResult;
+    if (stdout) this.logger(`[${commandId}] stdout: ${stdout}`);
+    if (stderr) this.logger(`[${commandId}] stderr: ${stderr}`);
+    if (succeeded) {
+      this.logger(`[${commandId}] Command succeeded`);
+      return { succeeded: true };
+    }
+
+    return processResult;
+  }
+
+  private resolveScriptPath(scriptName: string): string | undefined {
+    const scriptPath = join(this.extensionPath, "scripts", scriptName);
     if (!this.fileSystem.existsSync(scriptPath)) {
-      const errorMsg = `Installation script not found at ${scriptPath}`;
-      logger(errorMsg);
-      this.notifier.showError(`Failed to install opentips package: ${errorMsg}`);
-      return;
+      this.logger(`Installation script not found at ${scriptPath}`);
+      return undefined;
     }
 
-    const executionResult = await this.executeAndLog(`${config.commandRunner} "${scriptPath}"`);
-    if (executionResult.succeeded) {
-      this.notifier.showSuccess("OpenTips package installed successfully");
-    } else {
-      this.notifier.showError(`Failed to install opentips package: ${executionResult.errorMessage}`);
-    }
+    return scriptPath;
   }
 }

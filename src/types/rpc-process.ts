@@ -1,3 +1,5 @@
+import { IFileSystem } from "./system";
+
 export enum RPCProcessLaunchErrorCode {
   NoServiceDirectory,
   NoLanguageModelProvider,
