@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { TIP_CONTEXT_SEARCH_RADIUS } from "./apply-decorations";
-import { logger } from "./logger";
+import { logger } from "./extension-point/logger";
 import { Tip } from "./tips";
 
 // TODO: Needs to be invoked as the Editor changes, as well as when the Tips change. When Tips are no longer applicable

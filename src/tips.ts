@@ -1,5 +1,5 @@
 import { APP } from "./extension";
-import { logger } from "./logger";
+import { logger } from "./extension-point/logger";
 import invokeWithErrorReporting from "./report-error";
 import resolveWorkspaceFolder from "./resolve-workspace-folder";
 import { OpenTipsJSONRPCClient } from "./rpc-client";

@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { logger } from "./logger";
+import { logger } from "./extension-point/logger";
 
 let lastErrorMessageTime: number | null = null;
 

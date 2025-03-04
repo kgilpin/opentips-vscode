@@ -3,7 +3,7 @@ import { enrollAnthropicKey } from "./anthropic-key";
 import { enrollFileWatcher } from "./file-watcher";
 import { OpenTipsEvents, OpenTipsJSONRPCClient } from "./rpc-client";
 import { CompleteRequest, Tip, TipDeleted, TipList, Tips } from "./tips";
-import { logger, rpcLogger } from "./logger";
+import { enrollOutput, logger, rpcLogger } from "./extension-point/logger";
 import { enrollTipList, ITipsModel } from "./tip-tree";
 import { enrollOpenTip } from "./open-tip";
 import { enrollExplainTip } from "./explain-tip";
@@ -154,6 +154,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const tipsModel = enrollTipList(context);
   APP.tipsModel = tipsModel;
 
+  enrollOutput(context);
   enrollShowComponents(context);
   enrollOpenTip(context);
   enrollApplyTip(context, APP);

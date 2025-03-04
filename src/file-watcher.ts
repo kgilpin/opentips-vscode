@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { logger } from "./logger";
+import { logger } from "./extension-point/logger";
 import { APP } from "./extension";
 
 const DEFAULT_NOTIFICATION_DELAY = 5000;

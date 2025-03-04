@@ -1,12 +1,14 @@
-OpenTips provides output channels where you can see logs and debug information. You can access these output channels by looking for the `Output` tab in the bottom panel of the editor. You'll see two channels related to OpenTips:
+OpenTips requires an operational Python service to provide tips. If OpenTips isn't able to setup this service automatically, you can configure it yourself:
 
-- **OpenTips**: Log messages from the operation of the OpenTips extension.
-- **OpenTips RPC**: Logs from the `opentips` Python service.
+- [Show Service Installation Guide](command:opentips.showServiceInstallationWalkthrough)
+
+OpenTips requires a language model to generate suggestions:
+
+- [Show Language Model Selection Guide](command:opentips.showLanguageModelWalkthrough)
+
+OpenTips provides output channels where you can see logs and debug information:
+
+- [OpenTips Output](command:opentips.openExtensionChannel): Log messages from the operation of the OpenTips extension.
+- [OpenTips RPC Output](command:opentips.openRPCChannel): Logs from the `opentips` Python service.
 
 If you aren't getting tips, check these output channels for messages that might help you diagnose the issue.
-
-For full and complete operation, OpenTips requires the following:
-
-- Python 3.8 or later
-- Installing the `opentips` Python package
-- Choosing a large language model (LLM) provider such as GitHub Copilot or Anthropic.

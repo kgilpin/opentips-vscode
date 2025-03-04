@@ -2,7 +2,7 @@ import { join, resolve } from "node:path";
 import { CommandResult, isExecError, IInstaller, PlatformConfig } from "../types/installer";
 import { IExtensionLoader, INotifier } from "../types/platform";
 import { IFileSystem, IProcessRunner } from "../types/system";
-import { logger } from "../logger";
+import { logger } from "../extension-point/logger";
 
 export class CoreInstaller implements IInstaller {
   private static readonly INSTALL_MACOS_SCRIPT = "install_macos.sh";

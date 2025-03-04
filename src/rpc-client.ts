@@ -1,7 +1,7 @@
 import { JSONRPCClient } from "json-rpc-2.0";
 
 import EventEmitter from "events";
-import { logger } from "./logger";
+import { logger } from "./extension-point/logger";
 import { Tip, TipEvent } from "./tips";
 
 const FETCH_TIMEOUT = 60 * 1000;

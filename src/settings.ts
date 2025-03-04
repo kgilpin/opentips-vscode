@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { logger } from "./logger";
+import { logger } from "./extension-point/logger";
 
 export const PORT_SETTING_NAME = "opentips.rpcPort";
 export const LLM_SETTING_NAME = "opentips.copilotModelProvider";

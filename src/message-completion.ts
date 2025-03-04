@@ -12,7 +12,7 @@ import {
   QuickPickItem,
   extensions,
 } from "vscode";
-import { logger } from "./logger";
+import { logger } from "./extension-point/logger";
 import { OpenTipsJSONRPCClient } from "./rpc-client";
 import extractCode from "./extract-code";
 import { getCopilotModelProviderId, setCopilotModelProviderId } from "./settings";

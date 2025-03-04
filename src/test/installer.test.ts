@@ -1,7 +1,7 @@
 import { CoreInstaller } from "../lib/installer";
 import { IExtensionLoader, INotifier } from "../types/platform";
 import { IFileSystem, IProcessRunner } from "../types/system";
-import { logger } from "../logger";
+import { logger } from "../extension-point/logger";
 
 jest.mock("../logger", () => ({
   logger: jest.fn(),

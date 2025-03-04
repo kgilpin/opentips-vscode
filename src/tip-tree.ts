@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Tip } from "./tips";
 import path from "path";
-import { logger } from "./logger";
+import { logger } from "./extension-point/logger";
 
 class TipListProvider implements vscode.TreeDataProvider<string | Tip> {
   public _tips: Tip[] = [];

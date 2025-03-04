@@ -141,7 +141,7 @@
     "walkthroughs": [
       {
         "id": "usage",
-        "title": "Using OpenTips",
+        "title": "OpenTips Usage",
         "description": "Learn how to use OpenTips to get AI-powered coding tips for your project",
         "steps": [
           {
@@ -153,7 +153,7 @@
             }
           },
           {
-            "id": "opentips.service.getTips",
+            "id": "opentips.usage.getTips",
             "title": "Get tips",
             "description": "Visit OpenTips in the Activity Bar to get AI-powered coding tips for your project",
             "media": {
@@ -161,7 +161,7 @@
             }
           },
           {
-            "id": "opentips.service.useTips",
+            "id": "opentips.usage.useTips",
             "title": "View, apply, explain, and dismiss tips",
             "description": "View tips in the code, apply tips automatically, explain tips, and dismiss tips you don't need",
             "media": {
@@ -192,9 +192,17 @@
             }
           },
           {
+            "id": "opentips.service.installPython",
+            "title": "Install Python",
+            "description": "Install Python on your machine",
+            "media": {
+              "markdown": "./walkthroughs/service/python-install.md"
+            }
+          },
+          {
             "id": "opentips.service.selectInterpreter",
-            "title": "Select Python interpreter",
-            "description": "Select the Python interpreter for your project",
+            "title": "Create Python environment",
+            "description": "Select a Python interpreter and find or create a virtual environment",
             "media": {
               "markdown": "./walkthroughs/service/python-select-interpreter.md"
             }
@@ -211,7 +219,7 @@
       },
       {
         "id": "languageModel",
-        "title": "OpenTips Language Model",
+        "title": "OpenTips Language Model Selection",
         "description": "Configure the OpenTips Language Model provider",
         "steps": [
           {

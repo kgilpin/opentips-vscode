@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import { logger } from "../logger";
+import { logger } from "./logger";
 import { RpcProcessManager } from "../lib/rpc-process-manager";
 import { IRPCProcessLaunchContext } from "../types/rpc-process";
 
