@@ -190,15 +190,15 @@ export async function activate(context: vscode.ExtensionContext) {
   };
 
   const spawnChildProcess = (command: string, args: string[], options?: SpawnOptions): SpawnedProcess => {
-    const optionsDebug = { ...options };
+    const envDebug = { ...(options?.env || {}) };
     // Redact API and KEY variables
-    for (const key in optionsDebug.env) {
+    for (const key in envDebug) {
       if (key.toLowerCase().includes("api") || key.toLowerCase().includes("key")) {
-        optionsDebug.env[key] = "****";
+        envDebug[key] = "****";
       }
     }
 
-    const optionsDebugString = JSON.stringify(optionsDebug);
+    const optionsDebugString = JSON.stringify({ ...options, env: envDebug });
     logger(`[spawn] (${optionsDebugString}) ${command} ${args.join(" ")}`);
     const process = spawn(command, args, options);
     return new ChildProcess(process);
