@@ -29,6 +29,7 @@ import { enrollInstallPackage } from "./install-package";
 import { locateServiceDirectoryVirtualEnvDir } from "./configuration";
 import { spawn } from "child_process";
 import { NodeFileSystem } from "./system/node-system";
+import { enrollOpenSettings } from "./open-settings";
 
 const TIPS_LIMIT = 5;
 
@@ -162,6 +163,7 @@ export async function activate(context: vscode.ExtensionContext) {
   enrollDeleteTip(context);
   enrollExplainTip(context);
   enrollRefreshTips(context);
+  enrollOpenSettings(context);
   const anthropic = enrollAnthropicKey(context);
   enrollFileWatcher(context);
   enrollInstallPackage(context);

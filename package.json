@@ -80,6 +80,11 @@
         "icon": "$(sync)"
       },
       {
+        "command": "opentips.title.openSettings",
+        "title": "Open Settings",
+        "icon": "$(gear)"
+      },
+      {
         "command": "opentips.context.applyTip",
         "title": "Apply Tip",
         "icon": "$(code)"
@@ -117,24 +122,29 @@
         {
           "command": "opentips.title.refreshTips",
           "when": "view == opentips.tipList",
-          "group": "navigation"
+          "group": "navigation@1"
+        },
+        {
+          "command": "opentips.title.openSettings",
+          "when": "view == opentips.tipList",
+          "group": "navigation@2"
         }
       ],
       "view/item/context": [
         {
           "command": "opentips.context.applyTip",
           "when": "view == opentips.tipList && viewItem == opentips.tip",
-          "group": "inline"
+          "group": "inline@1"
         },
         {
           "command": "opentips.context.explainTip",
           "when": "view == opentips.tipList && viewItem == opentips.tip",
-          "group": "inline"
+          "group": "inline@2"
         },
         {
           "command": "opentips.context.deleteTip",
           "when": "view == opentips.tipList && viewItem == opentips.tip",
-          "group": "inline"
+          "group": "inline@3"
         }
       ]
     },
