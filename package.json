@@ -42,6 +42,11 @@
           "id": "opentips.tipList",
           "name": "Tip List",
           "type": "tree"
+        },
+        {
+          "id": "opentips.status",
+          "name": "Status",
+          "type": "webview"
         }
       ]
     },
@@ -279,6 +284,7 @@
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/js-yaml": "^4.0.9",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "22.13.1",
     "@types/vscode": "^1.96.0",
     "@typescript-eslint/eslint-plugin": "^8.22.0",

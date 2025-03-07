@@ -30,6 +30,7 @@ import { locateServiceDirectoryVirtualEnvDir } from "./configuration";
 import { spawn } from "child_process";
 import { NodeFileSystem } from "./system/node-system";
 import { enrollOpenSettings } from "./open-settings";
+import { enrollStatusPanel, IStatusPanel } from "./status-panel";
 
 const TIPS_LIMIT = 5;
 
@@ -42,6 +43,7 @@ class AppEvents implements IAppEvents {
   public reapplyDecorations: ReapplyDecorations | undefined;
   public applyDecorations: ApplyDecorations | undefined;
   public retrieveInitialTips: RetrieveInitialTips | undefined;
+  public statusPanel: IStatusPanel | undefined;
 
   private portByFolder = new Map<string, number | undefined>();
 
@@ -111,6 +113,7 @@ class AppEvents implements IAppEvents {
   portChanged(folder: string, port: number | undefined): void {
     logger(`[app-events] Port changed: ${folder} - ${port}`);
     this.openTipsEvents.portChanged(folder, port);
+    this.statusPanel?.portChanged(folder, port);
     this.portByFolder.set(folder, port);
     this.retrieveInitialTips?.(folder);
   }
@@ -164,6 +167,7 @@ export async function activate(context: vscode.ExtensionContext) {
   enrollExplainTip(context);
   enrollRefreshTips(context);
   enrollOpenSettings(context);
+  APP.statusPanel = enrollStatusPanel(context);
   const anthropic = enrollAnthropicKey(context);
   enrollFileWatcher(context);
   enrollInstallPackage(context);
