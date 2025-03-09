@@ -2,7 +2,7 @@
   "name": "opentips",
   "displayName": "OpenTips",
   "description": "Get AI-powered coding tips for your project, as you code",
-  "version": "1.0.0",
+  "version": "1.0.0-rc3",
   "engines": {
     "vscode": "^1.96.0",
     "node": "^22.13.1"

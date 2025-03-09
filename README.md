@@ -9,21 +9,40 @@ OpenTips provides coding tips and suggestions in your code editor. It's like hav
 
 Tips are displayed in a dedicated panel in the editor, and they are also highlighted within the code itself.
 
+![VS Code interface showing OpenTips panel with coding suggestions and inline code highlighting](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/resources/panel_and_tips.png)
+
 For each tip, you can choose to:
 
-- **Explain**: Learn more about the tip and why it's important.
-- **Apply**: Apply the tip to your code. This will open a GitHub Copilot Chat with a pre-filled message that you can send to apply the tip.
+- **Apply**: (Requires GitHub Copilot) Apply the tip to your code. This will open a GitHub Copilot Chat with a pre-filled message that you can send to apply the tip.
+- **Explain**: (Requires GitHub Copilot or Anthropic API Key) Learn more about the tip and why it's important.
 - **Dismiss**: Remove the tip from the list.
 
+## Table of Contents
+
+- [Tip Actions](#tip-actions)
+- [Features](#features)
+- [Installation Status](#installation-status)
+- [Configuration](#configuration)
+  - [Language Model Provider](#language-model-provider)
+  - [opentips Python Service](#opentips-python-service)
+- [Commands](#commands)
+  - [Setup and Configuration](#setup-and-configuration)
+  - [API Key Management](#api-key-management)
+- [Output](#output)
+- [Installation](#installation)
+  - [VS Code Marketplace](#vs-code-marketplace)
+  - [Manual Installation](#manual-installation)
+- [Bugs and Feature Requests](#bugs-and-feature-requests)
+
 ## Tip Actions
+
+### Apply Tip
+
+Click on the code icon `<>`, or `Apply` link in the popup, to apply the tip to your code. This will open a GitHub Copilot Chat that's pre-filled with information about the tip. You can then send the message to apply the tip to your code.
 
 ### Explain Tip
 
 Click on the question mark icon ？, or `Explain` link in the popup, to get a detailed explanation of the tip. There will be a slight delay while the explanation is fetched, then it will be opened in a new text editor document for you to read.
-
-### Apply Tip
-
-Click on the code icon `{}`, or `Apply` link in the popup, to apply the tip to your code. This will open a GitHub Copilot Chat that's pre-filled with information about the tip. You can then send the message to apply the tip to your code.
 
 ### Dismiss Tip
 
@@ -45,6 +64,14 @@ If you change your code in a way that makes a tip no longer relevant, the tip wi
 ### Prioritization and diversity
 
 Tips are continually updated and improved to provide a diverse set of suggestions. This also helps to prevent OpenTips from overwhelming you with too many tips at once!
+
+## Installation Status
+
+The `STATUS` view shows the installation status of the extension. This view will be displayed when the extension is first installed, and it will show the progress of the installation process.
+
+![OpenTips status view showing the installation status of the extension](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/resources/status.png)
+
+If OpenTips is not fully running and configured, you can use the information provided in this view to complete the setup process. The `Output` view can be used for troubleshooting and to report details that can help diagnose any issues.
 
 # Configuration
 
@@ -121,7 +148,7 @@ Once the packaging is complete, install the generated .vsix file:
 4. Navigate to the packaged .vsix file in the project directory
 5. Click "Install"
 
-![Install from VSIX](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/resources/install_vsix.png)
+![VS Code Extensions view showing the "Install from VSIX" menu option](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/resources/install_vsix.png)
 
 Alternatively, you can install the .vsix from the command line:
 
