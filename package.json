@@ -22,7 +22,7 @@
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
-  "publisher": "opentips",
+  "publisher": "SgtAirRaid",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
