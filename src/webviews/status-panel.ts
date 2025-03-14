@@ -1,6 +1,33 @@
 import * as vscode from "vscode";
 import { logger } from "../extension-point/logger";
-import MarkdownIt from "markdown-it";
+import MarkdownIt from "markdown-it"
+import EventEmitter from "events";
+
+class TimeoutStatusLoading extends EventEmitter {
+  private timeout: NodeJS.Timeout | undefined;
+
+  constructor(public delay: number) {
+    super();
+
+    this.startTimeout();
+  }
+
+  clear() {
+    this.removeAllListeners();
+  }
+
+  private startTimeout() {
+    if ( this.timeout ) {
+      clearTimeout(this.timeout); 
+    }
+
+    this.timeout = setTimeout(() => {
+      this.emit("timeout");
+    }, this.delay);
+  }
+}
+
+
 
 export class StatusPanelViewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "opentips.status";
@@ -12,12 +39,16 @@ export class StatusPanelViewProvider implements vscode.WebviewViewProvider {
     linkify: true,
     breaks: true,
   });
+  private statusTimeout: TimeoutStatusLoading | undefined;
 
   get anyFolderHasPort(): boolean {
     return Array.from(this.portsByFolder.values()).some((port) => port !== undefined);
   }
 
   portChanged(folder: string, port: number | undefined): void {
+    this.statusTimeout?.clear();
+    this.statusTimeout = undefined;
+
     const thenAnyFolderHasPort = this.anyFolderHasPort;
 
     this.portsByFolder.set(folder, port);
@@ -76,6 +107,12 @@ export class StatusPanelViewProvider implements vscode.WebviewViewProvider {
     const loadingMarkdown = `OpenTips is starting...
 `;
     this.renderMarkdown(loadingMarkdown);
+
+    this.statusTimeout = new TimeoutStatusLoading(10000);
+    this.statusTimeout.on("timeout", () => {
+      this.showStatusUnavailable();
+    });
+
   }
 
   private showStatusAvailable() {
