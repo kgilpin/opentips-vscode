@@ -5,7 +5,7 @@
 [![Rating](https://img.shields.io/visual-studio-marketplace/r/opentips.opentips)](https://marketplace.visualstudio.com/items?itemName=opentips.opentips)
 [![License](https://img.shields.io/github/license/SgtAirRaid/opentips-vscode)](LICENSE)
 
-OpenTips provides coding tips and suggestions in your code editor. It's like having a helpful colleague who points out potential improvements and best practices as you write code.
+As you code, OpenTips looks at your work-in-progress and provides tips based on the code you are writing. It's like having a helpful colleague who points out potential improvements and best practices as you write code.
 
 Tips are displayed in a dedicated panel in the editor, and they are also highlighted within the code itself.
 
@@ -13,9 +13,9 @@ Tips are displayed in a dedicated panel in the editor, and they are also highlig
 
 For each tip, you can choose to:
 
-- **Apply**: (Requires GitHub Copilot) Apply the tip to your code. This will open a GitHub Copilot Chat with a pre-filled message that you can send to apply the tip.
-- **Explain**: (Requires GitHub Copilot or Anthropic API Key) Learn more about the tip and why it's important.
-- **Dismiss**: Remove the tip from the list.
+- **Apply `<>`**: Change your code in the way suggested by the tip.
+- **Explain `？`**: Learn more about the tip and why it's important, without making a code change yet.
+- **Dismiss `🗑️`**: Ignore the tip suggestion.
 
 ## Table of Contents
 
@@ -30,17 +30,22 @@ For each tip, you can choose to:
   - [API Key Management](#api-key-management)
 - [Output](#output)
 - [Installation](#installation)
-  - [VS Code Marketplace](#vs-code-marketplace)
-  - [Manual Installation](#manual-installation)
+  - [VS Code Extension](#vs-code-extension)
+  - [Service Package](#service-package)
+- [Build and Install from Source][#build-and-install-from-source]
 - [Bugs and Feature Requests](#bugs-and-feature-requests)
 
 ## Tip Actions
 
 ### Apply Tip
 
+> Requires GitHub Copilot
+
 Click on the code icon `<>`, or `Apply` link in the popup, to apply the tip to your code. This will open a GitHub Copilot Chat that's pre-filled with information about the tip. You can then send the message to apply the tip to your code.
 
 ### Explain Tip
+
+> Requires GitHub Copilot or Anthropic API Key
 
 Click on the question mark icon ？, or `Explain` link in the popup, to get a detailed explanation of the tip. There will be a slight delay while the explanation is fetched, then it will be opened in a new text editor document for you to read.
 
@@ -50,12 +55,12 @@ Click on the trash can icon 🗑️, or `Dismiss` link to remove the tip from th
 
 ## Features
 
-### Auto-suggestion
+### Diff inspection
 
-As you code, OpenTips looks at your work-in-progress and provides tips based on the code you are writing. Tips are displayed in a dedicated panel in the editor, and they are also highlighted within the code itself.
+> Requires Git
 
-Specifically, OpenTips looks at the differences between your working branch and the main branch (which should be
-named `main`, `master`, or `develop`). Therefore, your project must be using Git in order to use OpenTips.
+OpenTips looks at the differences between your working branch and the main branch (which should be
+named `main`, `master`, or `develop`). 
 
 ### Auto-hiding
 
@@ -95,10 +100,10 @@ Once you've opened the Command Palette, start typing "OpenTips" to see the avail
 
 ### Setup and Configuration
 
-- **OpenTips: Open Usage Walkthrough** - Show the usage walkthrough and feature tour
-- **OpenTips: Open Service Installation Walkthrough** - Get help configuring and installing the Python backend service
-- **OpenTips: Open Language Model Walkthrough** - Get help configuring your preferred language model
-- **OpenTips: Install opentips Python Package** - Install or update the required Python backend service package
+- **OpenTips: Open Usage Walkthrough** - Show the usage walkthrough and feature tour.
+- **OpenTips: Open Service Installation Walkthrough** - Get help configuring and installing the Python backend service.
+- **OpenTips: Open Language Model Walkthrough** - Get help configuring your preferred language model.
+- **OpenTips: Install opentips Python Package** - Install or update the required Python backend service package. This command runs automatically on installation of the extension.
 
 ### API Key Management
 
@@ -117,14 +122,73 @@ If you aren't getting tips, check these output channels for messages that might 
 
 ## Installation
 
-### VS Code Marketplace
+### VS Code Extension
 
 1. Open VS Code
 2. Go to Extensions view (Ctrl+Shift+X or Cmd+Shift+X)
 3. Search for "OpenTips"
 4. Click Install
 
-### Manual Installation
+### Service Package
+
+OpenTips requires a Python package called "opentips".
+
+To complete your installation, you'll need to setup the Python environment and install the `opentips` package.
+
+#### Install Python
+
+You'll need to have Python 3.11 or later.
+
+- MacOS and Linux come with Python built in.
+- Windows users can install Python from the Microsoft Store: [Python 3.11](https://apps.microsoft.com/detail/9nrwmjp3717k)
+
+#### Automatic installer
+
+By default, OpenTips will automatically install the `opentips` package to `$HOME/.opentips`. 
+
+#### Automatic installer setting
+
+You can disable the automated installer by changing the setting "OpenTips: Install Globally" to "false".
+Do this if you want to manually manage the `opentips` package in a virtualenv of your project
+(the virtualenv must be located in `.venv` or `venv`).
+
+#### Installer command
+
+You can initiate the automatic installer by running the command "OpenTip: Install opentips Python Package". For example, if you need to install Python, you can then run this command to complete the install of OpenTips.
+
+#### Lock file
+
+A lock file called "install.lock" protects against multiple concurrent installations.
+
+#### Manual Installation
+
+Run the Python extension command `Python: Select Interpreter` from the Command Palette `(Ctrl+Shift+P)` or `(Cmd+Shift+P)`:
+
+![select-interpreter-prompt](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/walkthroughs/service/images/select-interpreter-prompt.png)
+
+Next, select the Python interpreter and virtualenv you want to use for this project:
+
+![python-select-interpreter](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/walkthroughs/service/images/choose-interpreter.png)
+
+
+Once you've selected the Python interpreter, run the command `Python: Create Terminal` from the Command Palette `(Ctrl+Shift+P)` or `(Cmd+Shift+P)` to open a terminal with the selected Python interpreter:
+
+![create-terminal](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/walkthroughs/service/images/create-terminal.png)
+
+From the terminal, install the `opentips` package using the following command:
+
+```bash
+pip install opentips
+```
+
+Now the OpenTips extension will detect that the package is available and it will run the RPC server in the background.
+
+You can check the status of the server by checking the `Output` panel:
+
+![opentips-output](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/walkthroughs/service/images/opentips-output.png)
+
+
+## Build and Install from Source
 
 ```bash
 # Clone the repository
@@ -137,7 +201,7 @@ cd opentips-vscode
 yarn
 
 # Package the extension, outputting opentips-x.y.z.vsix
-yarn run package
+yarn package
 ```
 
 Once the packaging is complete, install the generated .vsix file:

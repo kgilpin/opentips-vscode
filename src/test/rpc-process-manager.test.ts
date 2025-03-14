@@ -29,6 +29,7 @@ describe("RPC Process Manager Test Suite", () => {
     mockContext = {
       logger: () => {},
       rpcLogger: () => {},
+      locateGlobalServiceDirectoryVirtualEnvDir: () => "/users/bob/.opentips/venv",
       locateServiceDirectoryVirtualEnvDir: () => "/fake/venv",
       getAnthropicApiKey: async () => "fake-key",
       isCopilotLMProviderAvailable: async () => false,

@@ -119,6 +119,11 @@
         "opentips.copilotModelProvider": {
           "type": "string",
           "description": "LLM model provider to use with Copilot AI (configured automatically on first use)"
+        },
+        "opentips.installGlobally": {
+          "type": "boolean",
+          "description": "Install the 'opentips' service package globally to ~/.opentips/venv",
+          "default": true
         }
       }
     },
@@ -215,8 +220,16 @@
             }
           },
           {
+            "id": "opentips.service.automatic",
+            "title": "Automatic package installation",
+            "description": "Automatically install the OpenTips service package on your machine",
+            "media": {
+              "markdown": "./walkthroughs/service/automatic.md"
+            }
+          },
+          {
             "id": "opentips.service.selectInterpreter",
-            "title": "Create Python environment",
+            "title": "Manual - Create Python environment",
             "description": "Select a Python interpreter and find or create a virtual environment",
             "media": {
               "markdown": "./walkthroughs/service/python-select-interpreter.md"
@@ -224,7 +237,7 @@
           },
           {
             "id": "opentips.service.python.installDependencies",
-            "title": "Install 'opentips' package",
+            "title": "Manual - Install 'opentips' package",
             "description": "Install the Python 'opentips' package in your project",
             "media": {
               "markdown": "./walkthroughs/service/python-install-dependencies.md"

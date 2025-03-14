@@ -6,6 +6,8 @@ jest.mock("../installer/install-windows", () => ({
 }));
 
 import { installWindows } from "../installer/install-windows";
+import { join } from "path";
+import { isWindows } from "../lib/is-windows";
 
 let mockFileSystem: {
   getHomeDir: jest.Mock;
@@ -52,7 +54,8 @@ describe("CoreInstaller", () => {
 
   describe("initialization", () => {
     it("should create installer with correct default working directory", () => {
-      expect(installer.defaultWorkingDirectory).toBe("/home/user/.opentips");
+      const tipsDir = isWindows() ? "\\home\\user\\.opentips" : "/home/user/.opentips";
+      expect(installer.defaultWorkingDirectory).toBe(tipsDir);
       expect(mockFileSystem.getHomeDir).toHaveBeenCalled();
     });
   });
@@ -89,10 +92,11 @@ describe("CoreInstaller", () => {
         });
 
         const result = await installer.install("/workspace", mockFeedback);
+        const scriptPath = isWindows() ? "\\extension\\path\\scripts\\install_macos.sh" : "/extension/path/scripts/install_macos.sh";
 
         expect(result.succeeded).toBe(true);
         expect(mockProcessRunner.execute).toHaveBeenCalledWith(
-          ["bash", "-c", "/extension/path/scripts/install_macos.sh"],
+          ["bash", "-c", scriptPath],
           { cwd: "/workspace" }
         );
       });
@@ -107,10 +111,11 @@ describe("CoreInstaller", () => {
         });
 
         const result = await installer.install("/workspace", mockFeedback);
+        const scriptPath = isWindows() ? "\\extension\\path\\scripts\\install_linux.sh" : "/extension/path/scripts/install_linux.sh";
 
         expect(result.succeeded).toBe(true);
         expect(mockProcessRunner.execute).toHaveBeenCalledWith(
-          ["bash", "-c", "/extension/path/scripts/install_linux.sh"],
+          ["bash", "-c", scriptPath],
           { cwd: "/workspace" }
         );
       });
@@ -124,13 +129,14 @@ describe("CoreInstaller", () => {
         });
 
         const result = await installer.install("/workspace", mockFeedback);
+        const scriptPath = isWindows() ? "\\extension\\path\\scripts\\install_win.yaml" : "/extension/path/scripts/install_win.yaml";
 
         expect(result.succeeded).toBe(true);
         expect(mockInstallWindows).toHaveBeenCalledWith(
           mockProcessRunner,
           mockLogger,
           mockFeedback,
-          "/extension/path/scripts/install_win.yaml",
+          scriptPath,
           "/workspace"
         );
       });

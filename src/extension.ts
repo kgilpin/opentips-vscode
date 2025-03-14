@@ -211,11 +211,15 @@ export async function activate(context: vscode.ExtensionContext) {
   };
 
   const fileSystem = new NodeFileSystem();
+  const locateGlobalServiceDirectoryVirtualEnvDirWithFileSystemProvided = (): string | undefined =>
+    locateServiceDirectoryVirtualEnvDir(fileSystem);
   const locateServiceDirectoryVirtualEnvDirWithFileSystemProvided = (workspaceFolder: string): string | undefined =>
     locateServiceDirectoryVirtualEnvDir(fileSystem, workspaceFolder);
 
+
   const processLaunchContext: IRPCProcessLaunchContext = {
     getAnthropicApiKey: anthropic.getAnthropicApiKey.bind(anthropic),
+    locateGlobalServiceDirectoryVirtualEnvDir: locateGlobalServiceDirectoryVirtualEnvDirWithFileSystemProvided,
     locateServiceDirectoryVirtualEnvDir: locateServiceDirectoryVirtualEnvDirWithFileSystemProvided,
     isCopilotLMProviderAvailable,
     onError: onRPCLaunchProcessError,

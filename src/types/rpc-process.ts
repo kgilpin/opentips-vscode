@@ -45,6 +45,7 @@ export type SpawnOptions = {
 export interface IRPCProcessLaunchContext {
   logger(message: string): void;
   rpcLogger(message: string): void;
+  locateGlobalServiceDirectoryVirtualEnvDir: () => string | undefined;
   locateServiceDirectoryVirtualEnvDir: (workspaceFolder: string) => string | undefined;
   getAnthropicApiKey: () => Promise<string | undefined>;
   isCopilotLMProviderAvailable: () => Promise<boolean>;

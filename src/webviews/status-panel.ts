@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { logger } from "../extension-point/logger";
-import MarkdownIt from "markdown-it"
+import MarkdownIt from "markdown-it";
 import EventEmitter from "events";
 
 class TimeoutStatusLoading extends EventEmitter {
