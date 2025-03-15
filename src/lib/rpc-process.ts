@@ -121,7 +121,7 @@ export async function launchRpcProcess(
   context: IRPCProcessLaunchContext,
   workspaceFolder: string
 ): Promise<RPCProcessLaunchError | VirtualenvRpcProcess> {
-  const venvDir = context.locateServiceDirectoryVirtualEnvDir(workspaceFolder);
+  const venvDir = context.locateServiceDirectoryVirtualEnvDir();
   if (!venvDir) {
     return Promise.resolve({
       succeeded: false,

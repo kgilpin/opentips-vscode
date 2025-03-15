@@ -2,7 +2,7 @@
   "name": "opentips",
   "displayName": "OpenTips",
   "description": "Get AI-powered coding tips for your project, as you code",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.96.0",
     "node": "^22.13.1"
@@ -11,6 +11,7 @@
     "ms-python.python"
   ],
   "license": "GPL-3.0-only",
+  "icon": "resources/sun.png",
   "repository": "https://github.com/sgtairraid/opentips-vscode",
   "homepage": "https://github.com/sgtairraid/opentips-vscode",
   "categories": [
@@ -119,6 +120,11 @@
         "opentips.copilotModelProvider": {
           "type": "string",
           "description": "LLM model provider to use with Copilot AI (configured automatically on first use)"
+        },
+        "opentips.installGlobally": {
+          "type": "boolean",
+          "description": "Install the 'opentips' service package globally to ~/.opentips/venv",
+          "default": true
         }
       }
     },
@@ -215,8 +221,16 @@
             }
           },
           {
+            "id": "opentips.service.automatic",
+            "title": "Automatic package installation",
+            "description": "Automatically install the OpenTips service package on your machine",
+            "media": {
+              "markdown": "./walkthroughs/service/automatic.md"
+            }
+          },
+          {
             "id": "opentips.service.selectInterpreter",
-            "title": "Create Python environment",
+            "title": "Manual - Create Python environment",
             "description": "Select a Python interpreter and find or create a virtual environment",
             "media": {
               "markdown": "./walkthroughs/service/python-select-interpreter.md"
@@ -224,7 +238,7 @@
           },
           {
             "id": "opentips.service.python.installDependencies",
-            "title": "Install 'opentips' package",
+            "title": "Manual - Install 'opentips' package",
             "description": "Install the Python 'opentips' package in your project",
             "media": {
               "markdown": "./walkthroughs/service/python-install-dependencies.md"

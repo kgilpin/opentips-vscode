@@ -1,13 +1,25 @@
 import * as vscode from "vscode";
 
+import { join } from "path";
+
 import { logger } from "./extension-point/logger";
 
 export const PORT_SETTING_NAME = "opentips.rpcPort";
 export const LLM_SETTING_NAME = "opentips.copilotModelProvider";
 export const SERVICE_DIRECTORY_SETTING_NAME = "opentips.serviceDirectory";
+export const INSTALL_GLOBALLY_SETTING_NAME = "opentips.installGlobally";
+
+export function shouldInstallGlobally(): boolean {
+  const setting = vscode.workspace.getConfiguration().get(INSTALL_GLOBALLY_SETTING_NAME);
+  return setting === true || setting === "true";
+}
 
 export function rpcPortSetting(): number | undefined {
   return vscode.workspace.getConfiguration().get(PORT_SETTING_NAME);
+}
+
+export function globalServiceDirectory(homeDir: string): string {
+  return join(homeDir, ".opentips");
 }
 
 export function serviceDirectorySetting(): string | undefined {

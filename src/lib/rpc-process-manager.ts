@@ -1,5 +1,4 @@
 import { IRPCProcessLaunchContext, RPCProcessLaunchContextErrorAction } from "../types/rpc-process";
-import { IFileSystem } from "../types/system";
 import { isRPCProcessLaunchError, launchRpcProcess, VirtualenvRpcProcess } from "./rpc-process";
 
 // Logger interface to decouple from specific logging implementation
