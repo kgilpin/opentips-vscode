@@ -1,9 +1,14 @@
 # OpenTips
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/opentips.opentips)](https://marketplace.visualstudio.com/items?itemName=opentips.opentips)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/opentips.opentips)](https://marketplace.visualstudio.com/items?itemName=opentips.opentips)
-[![Rating](https://img.shields.io/visual-studio-marketplace/r/opentips.opentips)](https://marketplace.visualstudio.com/items?itemName=opentips.opentips)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/SgtAirRaid.opentips)](https://marketplace.visualstudio.com/items?itemName=SgtAirRaid.opentips)
 [![License](https://img.shields.io/github/license/SgtAirRaid/opentips-vscode)](LICENSE)
+
+<!--
+TODO: Add more badges as the numbers become meaningful.
+
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/SgtAirRaid.opentips)](https://marketplace.visualstudio.com/items?itemName=SgtAirRaid.opentips)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/SgtAirRaid.opentips)](https://marketplace.visualstudio.com/items?itemName=SgtAirRaid.opentips)
+-->
 
 As you code, OpenTips looks at your work-in-progress and provides tips based on the code you are writing. It's like having a helpful colleague who points out potential improvements and best practices as you write code.
 
@@ -60,7 +65,7 @@ Click on the trash can icon 🗑️, or `Dismiss` link to remove the tip from th
 > Requires Git
 
 OpenTips looks at the differences between your working branch and the main branch (which should be
-named `main`, `master`, or `develop`). 
+named `main`, `master`, or `develop`).
 
 ### Auto-hiding
 
@@ -122,18 +127,22 @@ If you aren't getting tips, check these output channels for messages that might 
 
 ## Installation
 
-### VS Code Extension
+### Install from VSCode
 
 1. Open VS Code
 2. Go to Extensions view (Ctrl+Shift+X or Cmd+Shift+X)
 3. Search for "OpenTips"
 4. Click Install
 
+### Install from VSCode Marketplace
+
+[🔗 Visit OpenTips on VS Code Marketplace &raquo;](https://marketplace.visualstudio.com/items?itemName=SgtAirRaid.opentips)
+
 ### Service Package
 
 OpenTips requires a Python package called "opentips".
 
-To complete your installation, you'll need to setup the Python environment and install the `opentips` package.
+To complete your installation, you'll need to set up the Python environment and install the `opentips` package.
 
 #### Install Python
 
@@ -144,7 +153,7 @@ You'll need to have Python 3.11 or later.
 
 #### Automatic installer
 
-By default, OpenTips will automatically install the `opentips` package to `$HOME/.opentips`. 
+By default, OpenTips will automatically install the `opentips` package to `$HOME/.opentips`.
 
 #### Automatic installer setting
 
@@ -170,7 +179,6 @@ Next, select the Python interpreter and virtualenv you want to use for this proj
 
 ![python-select-interpreter](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/walkthroughs/service/images/choose-interpreter.png)
 
-
 Once you've selected the Python interpreter, run the command `Python: Create Terminal` from the Command Palette `(Ctrl+Shift+P)` or `(Cmd+Shift+P)` to open a terminal with the selected Python interpreter:
 
 ![create-terminal](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/walkthroughs/service/images/create-terminal.png)
@@ -186,7 +194,6 @@ Now the OpenTips extension will detect that the package is available and it will
 You can check the status of the server by checking the `Output` panel:
 
 ![opentips-output](https://raw.githubusercontent.com/SgtAirRaid/opentips-vscode/refs/heads/main/walkthroughs/service/images/opentips-output.png)
-
 
 ## Build and Install from Source
 
