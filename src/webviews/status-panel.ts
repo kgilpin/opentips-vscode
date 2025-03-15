@@ -1,70 +1,78 @@
 import * as vscode from "vscode";
 import { logger } from "../extension-point/logger";
 import MarkdownIt from "markdown-it";
-import EventEmitter from "events";
+import { IProviderStatus } from "../lib/status-panel";
 
-class TimeoutStatusLoading extends EventEmitter {
-  private timeout: NodeJS.Timeout | undefined;
-
-  constructor(public delay: number) {
-    super();
-
-    this.startTimeout();
-  }
-
-  clear() {
-    this.removeAllListeners();
-  }
-
-  private startTimeout() {
-    if ( this.timeout ) {
-      clearTimeout(this.timeout); 
-    }
-
-    this.timeout = setTimeout(() => {
-      this.emit("timeout");
-    }, this.delay);
-  }
-}
-
-
-
-export class StatusPanelViewProvider implements vscode.WebviewViewProvider {
+export class StatusPanelViewProvider implements vscode.WebviewViewProvider, vscode.Disposable {
   public static readonly viewType = "opentips.status";
 
-  private portsByFolder = new Map<string, number | undefined>();
   private webviewView: vscode.WebviewView | undefined;
   private markdownRenderer = new MarkdownIt({
     html: true,
     linkify: true,
     breaks: true,
   });
-  private statusTimeout: TimeoutStatusLoading | undefined;
 
-  get anyFolderHasPort(): boolean {
-    return Array.from(this.portsByFolder.values()).some((port) => port !== undefined);
+  constructor(private providerStatus: IProviderStatus) {
+    this.providerStatus.on("changed", this.updateContent.bind(this));
+    this.providerStatus.on("mayHaveChanged", this.updateContent.bind(this));
   }
 
-  portChanged(folder: string, port: number | undefined): void {
-    this.statusTimeout?.clear();
-    this.statusTimeout = undefined;
-
-    const thenAnyFolderHasPort = this.anyFolderHasPort;
-
-    this.portsByFolder.set(folder, port);
-    const nowAnyFolderHasPort = this.anyFolderHasPort;
-
-    if (thenAnyFolderHasPort !== nowAnyFolderHasPort) {
-      this.updateContent();
-    }
+  dispose() {
+    this.providerStatus.dispose();
+    this.webviewView = undefined;
   }
 
-  updateContent() {
-    if (this.anyFolderHasPort) {
-      this.showStatusAvailable();
+  async updateContent() {
+    const contentSections = ["## OpenTips Status", ""];
+
+    const renderStartingContent = () => contentSections.push(`OpenTips is starting...`);
+
+    const renderStatusDetails = async () => {
+      if (this.providerStatus.isServiceDirectoryAvailable) {
+        contentSections.push("✅ Service directory is available.");
+      } else {
+        contentSections.push("⚠️ Service directory is not available.");
+      }
+      contentSections.push("");
+
+      if (this.providerStatus.isServiceAvailable) {
+        contentSections.push("✅ Service is available.");
+      } else {
+        contentSections.push("⚠️ Service is not available.");
+      }
+      contentSections.push("");
+
+      if (!this.providerStatus.isServiceAvailable || !this.providerStatus.isServiceDirectoryAvailable) {
+        contentSections.push(`<div class="button-container">
+  <button class="button" id="showServiceInstallationWalkthrough">Service Installation Instructions</button>
+</div>`);
+        contentSections.push("");
+      }
+
+      const languageModelProviderAvailable = await this.providerStatus.isLanguageModelProviderAvailable();
+      if (languageModelProviderAvailable) {
+        contentSections.push("✅ Language model provider is available.");
+      } else {
+        contentSections.push("⚠️ Language model provider is not available.");
+        contentSections.push(`<div class="button-container"></div>
+  <button class="button" id="showLanguageModelWalkthrough">Language Model Instructions</button>
+</div>`);
+      }
+    };
+
+    if (this.providerStatus.isStarting) {
+      renderStartingContent();
     } else {
-      this.showStatusUnavailable();
+      await renderStatusDetails();
     }
+
+    contentSections.push("");
+    contentSections.push(`<div class="button-container">
+        <button class="button" id="showOutputChannel">Show Output Channel</button>
+      </div>`);
+
+    this.renderMarkdown(contentSections.join("\n"));
   }
 
   resolveWebviewView(
@@ -95,59 +103,7 @@ export class StatusPanelViewProvider implements vscode.WebviewViewProvider {
       }
     }, undefined);
 
-    if (this.anyFolderHasPort) {
-      this.showStatusAvailable();
-      return;
-    }
-
-    this.showStatusLoading();
-  }
-
-  private showStatusLoading() {
-    const loadingMarkdown = `OpenTips is starting...
-`;
-    this.renderMarkdown(loadingMarkdown);
-
-    this.statusTimeout = new TimeoutStatusLoading(10000);
-    this.statusTimeout.on("timeout", () => {
-      this.showStatusUnavailable();
-    });
-
-  }
-
-  private showStatusAvailable() {
-    // TODO: Detect and show this when the port is available.
-    const _runningMarkdown = `OpenTips is running
-    
-<div class="button-container">
-  <button class="button" id="showOutputChannel">Show Output Channel</button>
-</div>
-`;
-    this.renderMarkdown(_runningMarkdown);
-  }
-
-  private showStatusUnavailable() {
-    const notRunningMarkdown = `OpenTips is not running yet.
-
-Ensure that the OpenTips Python package is installed:
-
-<div class="button-container">
-  <button class="button" id="showServiceInstallationWalkthrough">Service Installation Instructions</button>
-</div>
-
-Ensure that a language model provider is available:
-
-<div class="button-container">
-  <button class="button" id="showLanguageModelWalkthrough">Language Model Instructions</button>
-</div>
-
-Check the OpenTips output channel for more information:
-
-<div class="button-container">
-  <button class="button" id="showOutputChannel">Show Output Channel</button>
-</div>
-`;
-    this.renderMarkdown(notRunningMarkdown);
+    this.updateContent();
   }
 
   private renderMarkdown(markdownText: string) {

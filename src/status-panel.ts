@@ -1,16 +1,10 @@
 import { ExtensionContext, window } from "vscode";
 import { StatusPanelViewProvider } from "./webviews/status-panel";
+import { IProviderStatus } from "./lib/status-panel";
 
-export interface IStatusPanel {
-  portChanged(folder: string, port: number | undefined): void;
-}
-
-export function enrollStatusPanel(context: ExtensionContext): IStatusPanel {
-  const provider = new StatusPanelViewProvider();
+export function enrollStatusPanel(context: ExtensionContext, providerStatus: IProviderStatus) {
+  const provider = new StatusPanelViewProvider(providerStatus);
 
   context.subscriptions.push(window.registerWebviewViewProvider(StatusPanelViewProvider.viewType, provider));
-
-  return {
-    portChanged: provider.portChanged.bind(provider),
-  };
+  context.subscriptions.push(provider);
 }

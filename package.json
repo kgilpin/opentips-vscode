@@ -2,7 +2,7 @@
   "name": "opentips",
   "displayName": "OpenTips",
   "description": "Get AI-powered coding tips for your project, as you code",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.96.0",
     "node": "^22.13.1"
@@ -11,6 +11,7 @@
     "ms-python.python"
   ],
   "license": "GPL-3.0-only",
+  "icon": "resources/sun.png",
   "repository": "https://github.com/sgtairraid/opentips-vscode",
   "homepage": "https://github.com/sgtairraid/opentips-vscode",
   "categories": [

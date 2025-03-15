@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
 
+import { join } from "path";
+
 import { logger } from "./extension-point/logger";
 
 export const PORT_SETTING_NAME = "opentips.rpcPort";
@@ -14,6 +16,10 @@ export function shouldInstallGlobally(): boolean {
 
 export function rpcPortSetting(): number | undefined {
   return vscode.workspace.getConfiguration().get(PORT_SETTING_NAME);
+}
+
+export function globalServiceDirectory(homeDir: string): string {
+  return join(homeDir, ".opentips");
 }
 
 export function serviceDirectorySetting(): string | undefined {
