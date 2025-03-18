@@ -49,7 +49,7 @@ class TipListProvider implements vscode.TreeDataProvider<string | Tip> {
   getTreeItem(element: string | Tip): vscode.TreeItem {
     if (typeof element === "string") {
       return {
-        label: `${element} complexity`,
+        label: `${element}`,
         collapsibleState: vscode.TreeItemCollapsibleState.Expanded,
       };
     } else {
@@ -74,17 +74,15 @@ class TipListProvider implements vscode.TreeDataProvider<string | Tip> {
     if (typeof element === "string") {
       return null;
     } else {
-      return element.complexity;
+      return element.type;
     }
   }
 
   getChildren(element?: string | Tip): Thenable<(string | Tip)[]> {
     if (element === undefined) {
-      return Promise.resolve(
-        Array.from(new Set(this.filteredTips.map((tip) => tip.complexity)), (complexity) => complexity).sort()
-      );
+      return Promise.resolve(Array.from(new Set(this.filteredTips.map((tip) => tip.type)), (type) => type).sort());
     } else if (typeof element === "string") {
-      return Promise.resolve(this.filteredTips.filter((tip) => tip.complexity === element));
+      return Promise.resolve(this.filteredTips.filter((tip) => tip.type === element));
     } else {
       return Promise.resolve([]);
     }
