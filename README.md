@@ -18,9 +18,9 @@ Tips are displayed in a dedicated panel in the editor, and they are also highlig
 
 For each tip, you can choose to:
 
-- **Apply `<>`**: Change your code in the way suggested by the tip.
-- **Explain `？`**: Learn more about the tip and why it's important, without making a code change yet.
-- **Dismiss `🗑️`**: Ignore the tip suggestion.
+- **`</>` Apply**: Change your code in the way suggested by the tip.
+- **`？` Explain**: Learn more about the tip and how it can help, without making a code change yet.
+- **`🗑️` Dismiss**: Ignore the tip suggestion.
 
 ## Table of Contents
 
@@ -37,7 +37,7 @@ For each tip, you can choose to:
 - [Installation](#installation)
   - [VS Code Extension](#vs-code-extension)
   - [Service Package](#service-package)
-- [Build and Install from Source][#build-and-install-from-source]
+- [Build and Install from Source](#build-and-install-from-source)
 - [Bugs and Feature Requests](#bugs-and-feature-requests)
 
 ## Tip Actions
@@ -46,7 +46,7 @@ For each tip, you can choose to:
 
 > Requires GitHub Copilot
 
-Click on the code icon `<>`, or `Apply` link in the popup, to apply the tip to your code. This will open a GitHub Copilot Chat that's pre-filled with information about the tip. You can then send the message to apply the tip to your code.
+Click on the code icon `</>`, or `Apply` link in the popup, to apply the tip to your code. This will open a GitHub Copilot Chat that's pre-filled with information about the tip. You can then send the message to apply the tip to your code.
 
 ### Explain Tip
 
