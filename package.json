@@ -1,8 +1,8 @@
 {
   "name": "opentips",
-  "displayName": "OpenTips",
-  "description": "Get AI-powered coding tips for your project, as you code",
-  "version": "1.2.0",
+  "displayName": "OpenTips - Realtime Code Review",
+  "description": "Get AI-powered code review suggestions for your project, as you code",
+  "version": "1.3.0",
   "engines": {
     "vscode": "^1.96.0",
     "node": "^22.13.1"
@@ -12,8 +12,8 @@
   ],
   "license": "GPL-3.0-only",
   "icon": "resources/sun.png",
-  "repository": "https://github.com/sgtairraid/opentips-vscode",
-  "homepage": "https://github.com/sgtairraid/opentips-vscode",
+  "repository": "https://github.com/kgilpin/opentips-vscode",
+  "homepage": "https://github.com/kgilpin/opentips-vscode",
   "categories": [
     "AI",
     "Education",
@@ -23,16 +23,16 @@
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
-  "publisher": "SgtAirRaid",
+  "publisher": "Kevin Gilpin",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
         {
           "id": "opentips-panel",
-          "title": "OpenTips",
+          "title": "OpenTips - Realtime Code Review",
           "icon": "resources/sun.svg",
           "badge": {
-            "tooltip": "Number of available tips"
+            "tooltip": "Number of available suggestions"
           }
         }
       ]
@@ -82,7 +82,7 @@
       },
       {
         "command": "opentips.title.refreshTips",
-        "title": "Refresh Tips",
+        "title": "Refresh Suggestions",
         "icon": "$(sync)"
       },
       {
@@ -92,22 +92,22 @@
       },
       {
         "command": "opentips.context.applyTip",
-        "title": "Apply Tip",
+        "title": "Apply Suggestion",
         "icon": "$(code)"
       },
       {
         "command": "opentips.context.explainTip",
-        "title": "Explain Tip",
+        "title": "Explain Suggestion",
         "icon": "$(question)"
       },
       {
         "command": "opentips.context.deleteTip",
-        "title": "Delete Tip",
+        "title": "Delete Suggestion",
         "icon": "$(trash)"
       }
     ],
     "configuration": {
-      "title": "OpenTips",
+      "title": "OpenTips - Realtime Code Review",
       "properties": {
         "opentips.serviceDirectory": {
           "type": "string",
@@ -163,7 +163,7 @@
       {
         "id": "usage",
         "title": "OpenTips Usage",
-        "description": "Learn how to use OpenTips to get AI-powered coding tips for your project",
+        "description": "Learn how to use OpenTips to get AI-powered coding suggestions for your project",
         "steps": [
           {
             "id": "opentips.usage.overview",
@@ -175,24 +175,24 @@
           },
           {
             "id": "opentips.usage.getTips",
-            "title": "Get tips",
-            "description": "Visit OpenTips in the Activity Bar to get AI-powered coding tips for your project",
+            "title": "Get suggestions",
+            "description": "Visit OpenTips in the Activity Bar to get AI-powered coding suggestions for your project",
             "media": {
               "markdown": "./walkthroughs/usage/get-tips.md"
             }
           },
           {
             "id": "opentips.usage.useTips",
-            "title": "View, apply, explain, and dismiss tips",
-            "description": "View tips in the code, apply tips automatically, explain tips, and dismiss tips you don't need",
+            "title": "View, apply, explain, and dismiss suggestions",
+            "description": "View suggestions in the code, apply suggestions automatically, explain suggestions, and dismiss suggestions you don't need",
             "media": {
               "markdown": "./walkthroughs/usage/apply-tips.md"
             }
           },
           {
             "id": "opentips.service.troubleshooting",
-            "title": "Troubleshooting tips",
-            "description": "Get troubleshooting steps if tips are not showing correctly.",
+            "title": "Troubleshooting suggestions",
+            "description": "Get troubleshooting steps if suggestions are not showing correctly.",
             "media": {
               "markdown": "./walkthroughs/usage/troubleshooting.md"
             }
