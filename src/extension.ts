@@ -227,7 +227,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
   APP.providerStatus = new ProviderStatus(processLaunchContext);
   enrollStatusPanel(context, APP.providerStatus);
-  await enrollRpcProcess(context, processLaunchContext);
+
+  if (rpcPortSetting() === undefined || rpcPortSetting() === 0) {
+    await enrollRpcProcess(context, processLaunchContext);
+  } else {
+    logger(`[app-events] RPC process is expected on port ${rpcPortSetting()}`);
+  }
 
   // TODO: Related to the LLM provider
   // 1) Watch anthropic key to change
