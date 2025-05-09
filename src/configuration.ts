@@ -23,6 +23,6 @@ export function locateServiceDirectoryVirtualEnvDir(fileSystem: IFileSystem): st
     return VIRTUALENV_DIRS.map((dir) => venvPath(serviceDirectory!, dir)).find((dir) => existsSync(dir));
   }
 
-  serviceDirectory = globalServiceDirectory(fileSystem.getHomeDir());
+  serviceDirectory = globalServiceDirectory(fileSystem);
   return VIRTUALENV_DIRS.map((dir) => venvPath(serviceDirectory, dir)).find((dir) => existsSync(dir));
 }

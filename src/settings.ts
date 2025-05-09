@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 
-import { join } from "path";
-
 import { logger } from "./extension-point/logger";
+import getDefaultInstallDir from "./lib/default-install-dir";
+import { IFileSystem } from "./types/system";
 
 export const PORT_SETTING_NAME = "opentips.rpcPort";
 export const LLM_SETTING_NAME = "opentips.copilotModelProvider";
@@ -18,8 +18,8 @@ export function rpcPortSetting(): number | undefined {
   return vscode.workspace.getConfiguration().get(PORT_SETTING_NAME);
 }
 
-export function globalServiceDirectory(homeDir: string): string {
-  return join(homeDir, ".opentips");
+export function globalServiceDirectory(fileSystem: IFileSystem): string {
+  return getDefaultInstallDir(fileSystem);
 }
 
 export function serviceDirectorySetting(): string | undefined {

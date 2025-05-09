@@ -1,29 +1,8 @@
 import { join } from "node:path";
 
 import { IInstaller, IInstallerFeedback, IInstallResult } from "../types/installer";
-import { Logger } from "../types/platform";
-import { IFileSystem, IProcessResult, IProcessRunner, WithLockFile } from "../types/system";
-import { installWindows } from "../installer/install-windows";
-
-const INSTALL_MACOS_SCRIPT = "install_macos.sh";
-const INSTALL_WIN_COMMANDS = "install_win.yaml";
-const INSTALL_LINUX_SCRIPT = "install_linux.sh";
-
-const SHELL_NAME = "bash";
-
-const SCRIPT_NAME_FOR_PLATFORM: Record<NodeJS.Platform, string | null> = {
-  darwin: INSTALL_MACOS_SCRIPT,
-  win32: INSTALL_WIN_COMMANDS,
-  linux: INSTALL_LINUX_SCRIPT,
-  aix: null,
-  android: null,
-  freebsd: null,
-  openbsd: null,
-  sunos: null,
-  haiku: null,
-  cygwin: null,
-  netbsd: null,
-};
+import getDefaultInstallDir from "./default-install-dir";
+import performInstallation from "./perform-installation";
 
 export class CoreInstaller implements IInstaller {
   public readonly defaultWorkingDirectory: string;
@@ -35,7 +14,7 @@ export class CoreInstaller implements IInstaller {
     private readonly withLockFile: WithLockFile<IInstallResult>,
     private readonly logger: Logger
   ) {
-    this.defaultWorkingDirectory = join(fileSystem.getHomeDir(), ".opentips");
+    this.defaultWorkingDirectory = getDefaultInstallDir(fileSystem);
   }
 
   public async install(workingDirectory: string, feedback: IInstallerFeedback): Promise<IInstallResult> {

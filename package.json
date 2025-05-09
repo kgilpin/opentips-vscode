@@ -123,7 +123,7 @@
         },
         "opentips.installGlobally": {
           "type": "boolean",
-          "description": "Install the 'opentips' service package globally to ~/.opentips/venv",
+          "description": "Install the 'opentips' service package globally to the application data directory",
           "default": true
         }
       }
@@ -314,6 +314,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "@folder/xdg": "^4.0.1",
     "js-yaml": "^4.1.0",
     "json-rpc-2.0": "^1.7.0"
   }
