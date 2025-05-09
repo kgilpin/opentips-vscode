@@ -23,7 +23,7 @@
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
-  "publisher": "Kevin Gilpin",
+  "publisher": "kgilpin",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
