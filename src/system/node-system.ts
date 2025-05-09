@@ -1,7 +1,8 @@
 import { spawn } from "node:child_process";
-import { existsSync, statSync } from "node:fs";
+import { chmod, existsSync, mkdirSync, Mode, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { IFileSystem, IProcessResult, IProcessRunner } from "../types/system";
+import { promisify } from "node:util";
 
 export class NodeFileSystem implements IFileSystem {
   existsSync(path: string): boolean {
@@ -15,6 +16,14 @@ export class NodeFileSystem implements IFileSystem {
         return stats.isDirectory();
       },
     };
+  }
+
+  mkdirSync(path: string, options?: { recursive: boolean }): void {
+    mkdirSync(path, { recursive: options?.recursive });
+  }
+
+  async chmod(path: string, mode: Mode): Promise<void> {
+    await promisify(chmod)(path, mode);
   }
 
   getHomeDir(): string {

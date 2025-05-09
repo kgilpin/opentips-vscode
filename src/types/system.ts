@@ -1,3 +1,4 @@
+import { Mode } from "node:fs";
 import { ILogger } from "../lib/rpc-process-manager";
 
 export interface IProcessResult {
@@ -10,7 +11,9 @@ export interface IProcessResult {
 
 export interface IFileSystem {
   existsSync(path: string): boolean;
+  mkdirSync(path: string, options?: { recursive: boolean }): void;
   statSync(path: string): { isDirectory(): boolean };
+  chmod(scriptPath: string, mode: Mode): Promise<void>;
   getHomeDir(): string;
 }
 
