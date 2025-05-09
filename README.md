@@ -10,7 +10,7 @@ TODO: Add more badges as the numbers become meaningful.
 [![Rating](https://img.shields.io/visual-studio-marketplace/r/kgilpin.opentips)](https://marketplace.visualstudio.com/items?itemName=kgilpin.opentips)
 -->
 
-Do you find that code review comments come too late to be useful? Get code review suggestions automatically in real-time: bugs, security
+Does code review come too late to be useful? Get code review suggestions automatically in real-time: bugs, security
 flaws, and performance problems.
 
 With OpenTips, you don't have to manually initiate code review with a button, command, or menu; and you don't have to wait for a CI job to run.
