@@ -26,7 +26,7 @@ export class StatusPanelViewProvider implements vscode.WebviewViewProvider, vsco
   async updateContent() {
     const contentSections = ["## OpenTips Status", ""];
 
-    const renderStartingContent = () => contentSections.push(`OpenTips is starting...`);
+    const renderStartingContent = () => contentSections.push(`OpenTips is initializing...`);
 
     const renderStatusDetails = async () => {
       if (this.providerStatus.isServiceDirectoryAvailable) {
@@ -39,7 +39,7 @@ export class StatusPanelViewProvider implements vscode.WebviewViewProvider, vsco
       if (this.providerStatus.isServiceAvailable) {
         contentSections.push("✅ Service is available.");
       } else {
-        contentSections.push("⚠️ Service is not available.");
+        contentSections.push("🔄 Service is attempting to start...");
       }
       contentSections.push("");
 
