@@ -2,17 +2,16 @@ import { commands, ExtensionContext, ProgressLocation, window } from "vscode";
 
 import { CoreInstaller } from "./lib/installer";
 import { NodeFileSystem, NodeProcessRunner } from "./system/node-system";
-import { logger } from "./extension-point/logger";
 import { IInstallResult } from "./types/installer";
 import { withLockFile } from "./system/lock-file";
+import { logger } from "./extension-point/logger";
 
 export function enrollInstallPackage(context: ExtensionContext) {
   const installer = new CoreInstaller(
     context.extensionPath,
     new NodeFileSystem(),
     new NodeProcessRunner(),
-    withLockFile,
-    logger
+    withLockFile
   );
 
   const install = async (directory?: string) => {

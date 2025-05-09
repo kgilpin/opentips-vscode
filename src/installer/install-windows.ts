@@ -1,9 +1,9 @@
 import * as yaml from "js-yaml";
 import * as fs from "fs";
 
-import { Logger } from "../types/platform";
 import { IProcessResult, IProcessRunner } from "../types/system";
 import { IInstallerFeedback, IInstallResult } from "../types/installer";
+import { logger } from "../extension-point/logger";
 
 interface InstallConfigStep {
   readonly name: string;
@@ -28,9 +28,8 @@ async function runPowerShellCommand(
   return await processRunner.execute(commands, { cwd: workingDirectory });
 }
 
-export async function installWindows(
+export default async function installWindows(
   processRunner: IProcessRunner,
-  logger: Logger,
   feedback: IInstallerFeedback,
   scriptPath: string,
   workingDirectory: string
