@@ -31,11 +31,11 @@ export function getCopilotModelProviderId(): string | undefined {
 }
 
 export function setCopilotModelProviderId(id: string) {
-  vscode.workspace.getConfiguration().update(LLM_SETTING_NAME, id);
+  vscode.workspace.getConfiguration().update(LLM_SETTING_NAME, id, vscode.ConfigurationTarget.Global);
 }
 
 export function clearCopilotModelProviderId() {
-  vscode.workspace.getConfiguration().update(LLM_SETTING_NAME, undefined);
+  vscode.workspace.getConfiguration().update(LLM_SETTING_NAME, undefined, vscode.ConfigurationTarget.Global);
 }
 
 export function watchAnthropicApiKeySetting(handleFn: () => void) {
