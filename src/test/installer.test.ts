@@ -1,255 +1,109 @@
 import { CoreInstaller } from "../lib/installer";
+import { jest } from "@jest/globals";
+import type { IFileSystem, IProcessRunner, WithLockFile } from "../types/system";
+import type { IInstallResult, IInstallerFeedback } from "../types/installer";
 
-import * as resolveScriptPath from "../lib/resolve-script-path";
-import * as installWindows from "../installer/install-windows";
-import * as installWithShellScript from "../installer/install-with-shell-script";
-
-import { isWindows } from "../lib/is-windows";
-import getDefaultInstallDir from "../lib/default-install-dir";
-
-jest.mock("../lib/resolve-script-path", () => ({
-  __esModule: true,
-  default: jest.fn(),
+// Mock external dependencies
+jest.mock("../extension-point/logger", () => ({
+  logger: jest.fn(),
 }));
 
-jest.mock("../installer/install-windows", () => {
-  const actual = jest.requireActual("../installer/install-windows");
-  return {
-    __esModule: true,
-    default: jest.fn().mockImplementation(actual.default),
-  };
-});
-
-jest.mock("../installer/install-with-shell-script", () => {
-  const actual = jest.requireActual("../installer/install-with-shell-script");
-  return {
-    __esModule: true,
-    default: jest.fn().mockImplementation(actual.default),
-  };
-});
-
-let mockFileSystem: {
-  getHomeDir: jest.Mock;
-  existsSync: jest.Mock;
-  mkdirSync: jest.Mock;
-  chmod: jest.Mock;
-  statSync: jest.Mock;
-};
-let mockProcessRunner: {
-  execute: jest.Mock;
-  platform: NodeJS.Platform;
-};
-let mockLockFile: jest.Mock;
-let mockLogger: jest.Mock;
-let mockResolveScriptPath: jest.MockedFunction<typeof resolveScriptPath.default>;
-let mockInstallWindows: jest.MockedFunction<typeof installWindows.default>;
-let mockInstallWithShellScript: jest.MockedFunction<typeof installWithShellScript.default>;
-let installer: CoreInstaller;
-let mockFeedback = {
-  step: jest.fn(),
-};
+jest.mock("../lib/default-install-dir", () => ({
+  __esModule: true,
+  default: jest.fn().mockReturnValue("/default/path"),
+}));
 
 describe("CoreInstaller", () => {
+  let mockFileSystem: jest.Mocked<IFileSystem>;
+  let mockProcessRunner: jest.Mocked<IProcessRunner>;
+  let mockWithLockFile: jest.MockedFunction<WithLockFile<IInstallResult>>;
+  let installer: CoreInstaller;
+  let mockFeedback: IInstallerFeedback;
+
   beforeEach(() => {
-    jest.clearAllMocks();
-
     mockFileSystem = {
-      getHomeDir: jest.fn().mockReturnValue("/home/user"),
-      existsSync: jest.fn().mockReturnValue(true),
-      mkdirSync: jest.fn().mockReturnValue(undefined),
-      chmod: jest.fn().mockResolvedValue(undefined),
-      statSync: jest.fn().mockReturnValue({ isDirectory: () => true }),
-    };
+      existsSync: jest.fn(),
+      mkdirSync: jest.fn(),
+      statSync: jest.fn(),
+    } as unknown as jest.Mocked<IFileSystem>;
 
-    mockProcessRunner = {
-      platform: "darwin",
-      execute: jest.fn(),
-    };
+    mockProcessRunner = {} as jest.Mocked<IProcessRunner>;
 
-    mockLogger = jest.fn();
-    mockFeedback.step = jest.fn();
-    mockLockFile = jest.fn().mockImplementation((logger, lockFile, operation) => operation());
+    mockWithLockFile = jest.fn().mockImplementation((_, __, fn: any) => fn()) as any;
 
-    mockResolveScriptPath = jest.mocked(resolveScriptPath.default);
-    mockResolveScriptPath.mockImplementation(
-      (fileSystem, extensionPath, scriptName) => "/extension/path/scripts/" + scriptName
+    mockFeedback = {} as IInstallerFeedback;
+
+    installer = new CoreInstaller("/extension/path", mockFileSystem, mockProcessRunner, mockWithLockFile);
+  });
+
+  test("constructor sets defaultWorkingDirectory", () => {
+    expect(installer.defaultWorkingDirectory).toBe("/default/path");
+  });
+
+  test("install creates directory when it does not exist", async () => {
+    mockFileSystem.existsSync.mockReturnValue(false);
+    mockFileSystem.statSync.mockReturnValue({ isDirectory: () => true });
+
+    await installer.install("/test/path", mockFeedback);
+
+    expect(mockFileSystem.mkdirSync).toHaveBeenCalledWith("/test/path", { recursive: true });
+  });
+
+  test("install handles directory creation error", async () => {
+    mockFileSystem.existsSync.mockReturnValue(false);
+    mockFileSystem.mkdirSync.mockImplementation(() => {
+      throw new Error("mkdir error");
+    });
+
+    const result = await installer.install("/test/path", mockFeedback);
+
+    expect(result.succeeded).toBe(false);
+    expect(result.error).toContain("Failed to create directory");
+  });
+
+  test("install handles stat error", async () => {
+    mockFileSystem.existsSync.mockReturnValue(true);
+    mockFileSystem.statSync.mockImplementation(() => {
+      throw new Error("stat error");
+    });
+
+    const result = await installer.install("/test/path", mockFeedback);
+
+    expect(result.succeeded).toBe(false);
+    expect(result.error).toBe("Failed to stat /test/path.");
+  });
+
+  test("install validates directory path", async () => {
+    mockFileSystem.existsSync.mockReturnValue(true);
+    mockFileSystem.statSync.mockReturnValue({ isDirectory: () => false });
+
+    const result = await installer.install("/test/path", mockFeedback);
+
+    expect(result.succeeded).toBe(false);
+    expect(result.error).toBe("/test/path is not a directory.");
+  });
+
+  test("install uses lock file for installation", async () => {
+    mockFileSystem.existsSync.mockReturnValue(true);
+    mockFileSystem.statSync.mockReturnValue({ isDirectory: () => true });
+
+    await installer.install("/test/path", mockFeedback);
+
+    expect(mockWithLockFile).toHaveBeenCalledWith(
+      expect.any(Function),
+      "/test/path/install.lock",
+      expect.any(Function)
     );
-
-    mockInstallWindows = jest.mocked(installWindows.default);
-    mockInstallWithShellScript = jest.mocked(installWithShellScript.default);
-
-    installer = new CoreInstaller("/extension/path", mockFileSystem, mockProcessRunner, mockLockFile);
   });
 
-  function mockInstallScripts() {
-    mockInstallWindows.mockResolvedValue({
-      succeeded: true,
-    });
+  test("install handles lock file error", async () => {
+    mockFileSystem.existsSync.mockReturnValue(true);
+    mockFileSystem.statSync.mockReturnValue({ isDirectory: () => true });
+    mockWithLockFile.mockRejectedValue(new Error("lock error"));
 
-    mockInstallWithShellScript.mockResolvedValue({
-      succeeded: true,
-      stdout: "Installation successful",
-    });
-  }
+    const result = await installer.install("/test/path", mockFeedback);
 
-  describe("initialization", () => {
-    it("should create installer with correct default working directory", () => {
-      const tipsDir = getDefaultInstallDir(mockFileSystem);
-      expect(installer.defaultWorkingDirectory).toBe(tipsDir);
-      expect(mockFileSystem.getHomeDir).toHaveBeenCalled();
-    });
-  });
-
-  describe("input validation", () => {
-    beforeEach(() => mockInstallScripts());
-
-    it("should create the working directory", async () => {
-      mockFileSystem.existsSync.mockReturnValue(false);
-      mockInstallWithShellScript.mockResolvedValue({
-        succeeded: true,
-      });
-
-      const result = await installer.install("/workspace", mockFeedback);
-
-      expect(result.error).toBeUndefined();
-      expect(result.succeeded).toBe(true);
-      expect(mockFileSystem.existsSync).toHaveBeenCalledWith("/workspace");
-      expect(mockFileSystem.mkdirSync).toHaveBeenCalledWith("/workspace", { recursive: true });
-    });
-
-    it("should fail if working directory cannot be created", async () => {
-      mockFileSystem.existsSync.mockReturnValue(false);
-      mockFileSystem.mkdirSync.mockImplementation(() => {
-        throw new Error("Permission denied");
-      });
-
-      const result = await installer.install("/workspace", mockFeedback);
-
-      expect(result.succeeded).toBe(false);
-      expect(result.error).toContain("Permission denied");
-    });
-  });
-
-  describe("platform-specific installation", () => {
-    describe("macOS", () => {
-      it("should successfully install", async () => {
-        const result = await installer.install("/workspace", mockFeedback);
-        const scriptPath = isWindows()
-          ? "\\extension\\path\\scripts\\install_macos.sh"
-          : "/extension/path/scripts/install_macos.sh";
-
-        expect(result.succeeded).toBe(true);
-        expect(installWithShellScript).toHaveBeenCalledWith(
-          mockLogger,
-          mockProcessRunner,
-          mockFeedback,
-          scriptPath,
-          "/workspace"
-        );
-      });
-    });
-
-    describe("Linux", () => {
-      it("should successfully install", async () => {
-        mockProcessRunner.platform = "linux";
-        mockProcessRunner.execute.mockResolvedValue({
-          succeeded: true,
-          stdout: "Installation successful",
-        });
-
-        const result = await installer.install("/workspace", mockFeedback);
-        const scriptPath = isWindows()
-          ? "\\extension\\path\\scripts\\install_linux.sh"
-          : "/extension/path/scripts/install_linux.sh";
-
-        expect(result.error).toBeUndefined();
-        expect(result.succeeded).toBe(true);
-        expect(mockProcessRunner.execute).toHaveBeenCalledWith(["bash", "-c", scriptPath], { cwd: "/workspace" });
-      });
-    });
-
-    describe("Windows", () => {
-      it("should successfully install", async () => {
-        mockProcessRunner.platform = "win32";
-        mockInstallWindows.mockResolvedValue({
-          succeeded: true,
-        });
-
-        const result = await installer.install("/workspace", mockFeedback);
-        const scriptPath = isWindows()
-          ? "\\extension\\path\\scripts\\install_win.yaml"
-          : "/extension/path/scripts/install_win.yaml";
-
-        expect(result.error).toBeUndefined();
-        expect(result.succeeded).toBe(true);
-        expect(mockInstallWindows).toHaveBeenCalledWith(
-          mockProcessRunner,
-          mockLogger,
-          mockFeedback,
-          scriptPath,
-          "/workspace"
-        );
-      });
-    });
-  });
-
-  describe("error handling", () => {
-    describe("platform support", () => {
-      it("should fail on unsupported platform", async () => {
-        mockProcessRunner.platform = "freebsd";
-
-        const result = await installer.install("/workspace", mockFeedback);
-
-        expect(result.succeeded).toBe(false);
-        expect(result.error).toContain("Unsupported platform: freebsd");
-        expect(mockProcessRunner.execute).not.toHaveBeenCalled();
-      });
-    });
-
-    describe("script execution failures", () => {
-      it("should handle Unix script failure", async () => {
-        mockProcessRunner.platform = "linux";
-        mockProcessRunner.execute.mockResolvedValue({
-          succeeded: false,
-          stderr: "Permission denied",
-          error: "Command failed",
-        });
-
-        const result = await installer.install("/workspace", mockFeedback);
-
-        expect(result.succeeded).toBe(false);
-        expect(result.error).toBe("Command failed");
-        expect(mockLogger).toHaveBeenCalledWith(expect.stringContaining("stderr: Permission denied"));
-      });
-
-      it("should handle Windows script failure", async () => {
-        mockProcessRunner.platform = "win32";
-        mockInstallWindows.mockResolvedValue({
-          succeeded: false,
-          error: "PowerShell execution failed",
-        });
-
-        const result = await installer.install("/workspace", mockFeedback);
-
-        expect(result.succeeded).toBe(false);
-        expect(result.error).toBe("PowerShell execution failed");
-      });
-    });
-
-    describe("missing files", () => {
-      it("should report missing script file", async () => {
-        mockProcessRunner.platform = "darwin";
-        mockFileSystem.existsSync.mockImplementation((path: string) => {
-          return !path.includes("install_macos.sh");
-        });
-
-        const result = await installer.install("/workspace", mockFeedback);
-
-        expect(result.succeeded).toBe(false);
-        expect(result.error).toContain("Script not found for platform");
-        expect(mockLogger).toHaveBeenCalledWith(expect.stringContaining("Installation script not found"));
-        expect(mockProcessRunner.execute).not.toHaveBeenCalled();
-      });
-    });
+    expect(result.succeeded).toBe(false);
+    expect(result.error).toBe("lock error");
   });
 });

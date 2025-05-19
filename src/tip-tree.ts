@@ -3,6 +3,13 @@ import { Tip } from "./tips";
 import path from "path";
 import { logger } from "./extension-point/logger";
 
+const PRIORITY_INDEXES: Record<string, number> = {
+  high: 3,
+  normal: 2,
+  medium: 2,
+  low: 1,
+};
+
 class TipListProvider implements vscode.TreeDataProvider<string | Tip> {
   public _tips: Tip[] = [];
   private _filteredTips: Tip[] | null = null;
@@ -49,7 +56,7 @@ class TipListProvider implements vscode.TreeDataProvider<string | Tip> {
   getTreeItem(element: string | Tip): vscode.TreeItem {
     if (typeof element === "string") {
       return {
-        label: `${element}`,
+        label: `${element} priority`,
         collapsibleState: vscode.TreeItemCollapsibleState.Expanded,
       };
     } else {
@@ -58,7 +65,7 @@ class TipListProvider implements vscode.TreeDataProvider<string | Tip> {
       return {
         iconPath,
         id: element.id,
-        label: `${fileName}:${element.line} - ${element.label}`,
+        label: `${element.type} - ${element.label} - ${fileName}:${element.line}`,
         tooltip: element.description,
         contextValue: "opentips.tip",
         command: {
@@ -74,15 +81,20 @@ class TipListProvider implements vscode.TreeDataProvider<string | Tip> {
     if (typeof element === "string") {
       return null;
     } else {
-      return element.type;
+      return element.priority;
     }
   }
 
   getChildren(element?: string | Tip): Thenable<(string | Tip)[]> {
     if (element === undefined) {
-      return Promise.resolve(Array.from(new Set(this.filteredTips.map((tip) => tip.type)), (type) => type).sort());
+      const observedPriorities = Array.from(new Set(this.filteredTips.map((tip) => tip.priority)));
+      const prioritySortOrder = (priority: string) => PRIORITY_INDEXES[priority] ?? 0;
+      observedPriorities.sort((a, b) => {
+        return prioritySortOrder(b) - prioritySortOrder(a);
+      });
+      return Promise.resolve(observedPriorities);
     } else if (typeof element === "string") {
-      return Promise.resolve(this.filteredTips.filter((tip) => tip.type === element));
+      return Promise.resolve(this.filteredTips.filter((tip) => tip.priority === element));
     } else {
       return Promise.resolve([]);
     }

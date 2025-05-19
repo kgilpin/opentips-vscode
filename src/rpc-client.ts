@@ -2,9 +2,30 @@ import { JSONRPCClient } from "json-rpc-2.0";
 
 import EventEmitter from "events";
 import { logger } from "./extension-point/logger";
-import { Tip, TipEvent } from "./tips";
+import { decodeTipId, Tip, TipEvent } from "./tips";
+import assert from "assert";
 
 const FETCH_TIMEOUT = 60 * 1000;
+
+/**
+ * Patch the tip object to ensure it has all required fields. This ensures that
+ * older tip data can be loaded into the newer tip model.
+ */
+function patchTip(tipData: Partial<Tip>): Tip {
+  // Ensure the tip has "priority"
+  // If there are problems with this or other tip format migrations, parse the tip id
+  // to extract the version, id digest, and directory and utilize the version information.
+  assert(tipData.id, "Tip id is required");
+  const tipId = decodeTipId(tipData.id);
+
+  if (tipId.version === "1.0") {
+    if (!tipData.priority) {
+      logger(`[rpc-client] Setting priority=medium for tip ${tipId.id} (tip version is 1.0)`);
+      tipData.priority = "medium";
+    }
+  }
+  return tipData as Tip;
+}
 
 /**
  * JSON-RPC client for the OpenTips server.
@@ -39,7 +60,7 @@ export class OpenTipsJSONRPCClient {
 
   async fetchTip(tipId: string): Promise<Tip> {
     logger(`[rpc-client] Fetching tip ${tipId}`);
-    return await this.client.request("fetch_tip", { tip_id: tipId });
+    return patchTip(await this.client.request("fetch_tip", { tip_id: tipId }));
   }
 
   async listTips(limit?: number): Promise<Tip[]> {
@@ -47,7 +68,7 @@ export class OpenTipsJSONRPCClient {
     const params: any = {};
     if (limit) params.limit = limit;
 
-    return await this.client.request("list_tips", params);
+    return (await this.client.request("list_tips", params)).map(patchTip);
   }
 
   async suggest(newOnly = false): Promise<void> {

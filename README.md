@@ -105,7 +105,7 @@ If OpenTips is not fully running and configured, you can use the information pro
 OpenTips uses a large-language model (LLM) to provide suggestions. You can choose between the two following ways of providing an LLM to OpenTips:
 
 1. **GitHub Copilot**: If you have GitHub Copilot installed, OpenTips will use it as the language model provider. This is an easy way to use OpenTips, as you don't need to provide any additional configuration.
-2. **Use your Claude API key from Anthropic**: For standalone functionality without requiring GitHub Copilot. This will allow OpenTips to use the Anthropic API as the language model provider.
+2. **Anthropic Claude API Key**: For standalone functionality without requiring GitHub Copilot. This will allow OpenTips to use the Anthropic API as the language model provider.
 
 ## `opentips` Python Service
 

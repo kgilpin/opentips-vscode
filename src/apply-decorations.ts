@@ -19,10 +19,7 @@ export type TipDecorations = {
   reapplyDecorations: ReapplyDecorations;
 };
 
-export function enrollApplyDecorations(
-  context: vscode.ExtensionContext,
-  tipsProvider: TipsProvider
-): TipDecorations {
+export function enrollApplyDecorations(context: vscode.ExtensionContext, tipsProvider: TipsProvider): TipDecorations {
   const decorationType = vscode.window.createTextEditorDecorationType({
     backgroundColor: TIP_BACKGROUND_COLOR,
     isWholeLine: true,
@@ -58,11 +55,10 @@ export function enrollApplyDecorations(
         }
 
         // TODO: Can these commands be rendered as buttons instead of links in Markdown?
-        // TODO: Use server-side encoding of tip ids rather than client-side encoding.
         const applyButton = createCommandButton("Apply", "opentips.context.applyTip", tip.id);
-        const dismissButton = createCommandButton("Dismiss", "opentips.context.deleteTip", tip.id);
         const explainButton = createCommandButton("Explain", "opentips.context.explainTip", tip.id);
-        const description = ` ${tip.description}\n\n${applyButton} | ${dismissButton} | ${explainButton}`;
+        const dismissButton = createCommandButton("Dismiss", "opentips.context.deleteTip", tip.id);
+        const description = ` ${tip.description}\n\n${applyButton} | ${explainButton} | ${dismissButton}`;
         const hoverMessage = new vscode.MarkdownString(description);
         hoverMessage.isTrusted = true;
 

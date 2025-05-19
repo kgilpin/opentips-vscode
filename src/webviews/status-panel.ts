@@ -24,7 +24,7 @@ export class StatusPanelViewProvider implements vscode.WebviewViewProvider, vsco
   }
 
   async updateContent() {
-    const contentSections = ["## OpenTips Status", ""];
+    const contentSections = [];
 
     const renderStartingContent = () => contentSections.push(`OpenTips is initializing...`);
 
