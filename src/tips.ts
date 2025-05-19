@@ -31,7 +31,7 @@ export function decodeTipId(encodedTipId: string): TipId {
   return { directory, id };
 }
 
-export type Tip = {
+export interface Tip {
   id: string;
   directory: string;
   file: string;
@@ -41,33 +41,33 @@ export type Tip = {
   complexity: string;
   label: any;
   description: string;
-};
+}
 
-export type TipList = {
+export interface TipList {
   tips: Tip[];
   error?: string;
-};
+}
 
-export type TipDeleted = {
+export interface TipDeleted {
   tip_id: string;
   reason: string;
-};
+}
 
-export type CompleteRequest = {
+export interface CompleteRequest {
   request_id: string;
   directory: string;
   prompt: string;
   user_message: string;
   temperature: number;
   response_format: string | undefined;
-};
+}
 
 export type Explanation = string;
 
-export type TipEvent = {
+export interface TipEvent {
   type: string;
   data: Record<string, any>; // This is the most refined we can get without defining specific subtypes for events. Which, I guess would be a good idea.
-};
+}
 
 export class Tips {
   static resolveTip(tip: Tip | string) {
