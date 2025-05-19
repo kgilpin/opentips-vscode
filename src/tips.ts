@@ -5,6 +5,7 @@ import resolveWorkspaceFolder from "./resolve-workspace-folder";
 import { OpenTipsJSONRPCClient } from "./rpc-client";
 
 export type TipId = {
+  version: string;
   directory: string;
   id: string;
 };
@@ -21,14 +22,14 @@ export function decodeTipId(encodedTipId: string): TipId {
   let version: string, directory: string, id: string;
   if (lines.length === 3) {
     [version, directory, id] = lines;
-    if (version !== "1.0") throw new Error(`Unsupported tip id version: ${version}`);
+    if (version !== "1.0" && version !== "1.1") throw new Error(`Unsupported tip id version: ${version}`);
   } else {
     throw new Error(`Invalid tip id: ${encodedTipId}`);
   }
 
   // TODO: Consider other lines length?
 
-  return { directory, id };
+  return { version, directory, id };
 }
 
 export interface Tip {
@@ -36,11 +37,12 @@ export interface Tip {
   directory: string;
   file: string;
   line: number;
-  context: string;
   type: string;
-  complexity: string;
-  label: any;
+  label: string;
   description: string;
+  priority: string;
+  complexity: string;
+  context: string;
 }
 
 export interface TipList {

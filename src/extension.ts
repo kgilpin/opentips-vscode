@@ -74,7 +74,9 @@ class AppEvents implements IAppEvents {
   tipsReceived(tips: Tip[]): void {
     logger(`[app-events] ${tips.length} tips received:`);
     for (const tip of tips) {
-      logger(`[app-events]   ${tip.file}:${tip.line} - ${tip.type} - ${tip.complexity} - ${tip.description}`);
+      logger(
+        `[app-events]   ${tip.file}:${tip.line} - ${tip.type} - ${tip.priority} - ${tip.complexity} - ${tip.description}`
+      );
       logger(`[app-events]     ${tip.context}`);
     }
 

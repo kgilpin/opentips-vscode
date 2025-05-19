@@ -41,7 +41,7 @@
       "opentips-panel": [
         {
           "id": "opentips.tipList",
-          "name": "Tip List",
+          "name": "Suggestions",
           "type": "tree"
         },
         {
