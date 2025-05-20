@@ -44,4 +44,4 @@ commands:
     command: python -m venv venv
 
   - name: Installing opentips package
-    command: venv\Scripts\pip.exe install --ignore-requires-python opentips
+    command: venv\Scripts\pip.exe install --upgrade --ignore-requires-python opentips

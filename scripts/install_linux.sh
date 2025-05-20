@@ -49,7 +49,7 @@ echo "======================================="
 echo " Upgrading pip, installing opentips..."
 echo "======================================="
 pip install --upgrade pip
-pip install --ignore-requires-python opentips
+pip install --upgrade --ignore-requires-python opentips
 
 echo
 echo "======================================="

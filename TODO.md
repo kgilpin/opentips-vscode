@@ -5,18 +5,7 @@
 - [ ] Auto-update the opentips package when a new version is available.
 - [ ] When the user manually refreshes the tips, show a progress indicator message.
 - [ ] Figure out how to embed commands as Buttons in the walkthrough pages.
-- [ ] Add event types. Example:
-
-```typescript
-interface TipDeletedEvent {
-  type: "tip_deleted";
-  data: {
-    tip_id: string;
-    reason: string;
-  };
-}
-```
-
+- [ ] Auto-update the opentips package when a new version is available.
 - [x] (bug) "OpenTips - Open Service Installation Walkthrough" opens the generic list of VSCode walkthroughs.
 - [x] Update decoration text color for light mode
 - [x] Update Marketplace listing icon
