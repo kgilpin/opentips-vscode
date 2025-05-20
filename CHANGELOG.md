@@ -1,3 +1,11 @@
+# [1.7.0](https://github.com/kgilpin/opentips-vscode/compare/v1.6.0...v1.7.0) (2025-05-20)
+
+
+### Features
+
+* Adjust the tip decoration colors ([9029acc](https://github.com/kgilpin/opentips-vscode/commit/9029accde51e0ec1aa314c3a4b64e01b41fef6d4))
+* Convert a suggestion into a code TODO item ([9c5222c](https://github.com/kgilpin/opentips-vscode/commit/9c5222cbbba1aafcc2dedcb68e022b7df5e7d229))
+
 # [1.6.0](https://github.com/kgilpin/opentips-vscode/compare/v1.5.0...v1.6.0) (2025-05-20)
 
 
