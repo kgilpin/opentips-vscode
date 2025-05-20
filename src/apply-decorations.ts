@@ -59,8 +59,9 @@ export function enrollApplyDecorations(context: vscode.ExtensionContext, tipsPro
         // TODO: Can these commands be rendered as buttons instead of links in Markdown?
         const applyButton = createCommandButton("Apply", "opentips.context.applyTip", tip.id);
         const explainButton = createCommandButton("Explain", "opentips.context.explainTip", tip.id);
+        const todoButton = createCommandButton("TODO", "opentips.context.todoTip", tip.id);
         const dismissButton = createCommandButton("Dismiss", "opentips.context.deleteTip", tip.id);
-        const description = ` ${tip.description}\n\n${applyButton} | ${explainButton} | ${dismissButton}`;
+        const description = ` ${tip.description}\n\n${applyButton} | ${explainButton} | ${todoButton} | ${dismissButton}`;
         const hoverMessage = new vscode.MarkdownString(description);
         hoverMessage.isTrusted = true;
 

@@ -5,13 +5,15 @@
 - [ ] After upgrading the opentips package, restart the opentips RPC service.
 - [ ] Figure out how to embed commands as Buttons in the walkthrough pages.
 - [ ] Auto-update the opentips package when a new version is available.
+- [ ] The VSIX file that's uploaded to GitHub releases by semantic release seems to have the older/previous version number embedded in the package JSON.
+- [x] Add ability to move a suggestion to TODO.md or a code comment.
 - [x] When the user manually refreshes the tips, show a progress indicator message.
 - [x] (bug) "OpenTips - Open Service Installation Walkthrough" opens the generic list of VSCode walkthroughs.
-- [x] Update decoration text color for light mode
-- [x] Update Marketplace listing icon
-- [x] Update the tip list image on the marketplace page
-- [x] Provide status feedback on the service operational status
-- [x] Implement the priority field
+- [x] Update decoration text color for light mode.
+- [x] Update Marketplace listing icon.
+- [x] Update the tip list image on the marketplace page.
+- [x] Provide status feedback on the service operational status.
+- [x] Implement the priority field.
 - [x] Don't run tip server when a fixed port is configured.
 - [x] Show status webview in the sidebar panel.
 - [x] Show a gear icon in the Panel to open the settings.

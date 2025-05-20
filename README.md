@@ -26,6 +26,7 @@ For each review suggestion, you can choose to:
 
 - **`</>` Apply**: Change your code in the way suggested by the review.
 - **`？` Explain**: Learn more about the review comment and how it can help, without making a code change yet.
+- **`📋` TODO**: Add a TODO comment to the code with the review suggestion, so that you can come back to it later.
 - **`🗑️` Dismiss**: Ignore the review suggestion.
 
 ### Quick Start
@@ -69,6 +70,10 @@ Apply suggestions effortlessly with a single click directly from your code edito
 > Works seamlessly with your GitHub Copilot subscription or independently via an Anthropic API key
 
 Click on the question mark icon ？, or `Explain` link in the popup, to get a detailed explanation of the suggestion. There will be a slight delay while the explanation is fetched, then it will be opened in a new text editor document for you to read.
+
+### TODO
+
+Click on the clipboard icon 📋, or `TODO` link in the popup, to add a TODO comment to your code with the review suggestion. This allows you to keep track of suggestions that you want to address later.
 
 ### Dismiss
 

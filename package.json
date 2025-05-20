@@ -101,6 +101,11 @@
         "icon": "$(question)"
       },
       {
+        "command": "opentips.context.todoTip",
+        "title": "Add TODO",
+        "icon": "$(checklist)"
+      },
+      {
         "command": "opentips.context.deleteTip",
         "title": "Delete Suggestion",
         "icon": "$(trash)"
@@ -153,9 +158,14 @@
           "group": "inline@2"
         },
         {
-          "command": "opentips.context.deleteTip",
+          "command": "opentips.context.todoTip",
           "when": "view == opentips.tipList && viewItem == opentips.tip",
           "group": "inline@3"
+        },
+        {
+          "command": "opentips.context.deleteTip",
+          "when": "view == opentips.tipList && viewItem == opentips.tip",
+          "group": "inline@4"
         }
       ]
     },

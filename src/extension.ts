@@ -32,6 +32,7 @@ import { NodeFileSystem } from "./system/node-system";
 import { enrollOpenSettings } from "./open-settings";
 import { enrollStatusPanel } from "./status-panel";
 import { IProviderStatus, ProviderStatus } from "./lib/status-panel";
+import { enrollTodoTip } from "./todo-tip";
 
 const TIPS_LIMIT = 5;
 
@@ -167,6 +168,7 @@ export async function activate(context: vscode.ExtensionContext) {
   enrollOpenTip(context);
   enrollApplyTip(context, APP);
   enrollDeleteTip(context);
+  enrollTodoTip(context);
   enrollExplainTip(context);
   enrollRefreshTips(context);
   enrollOpenSettings(context);
