@@ -11,4 +11,4 @@ Do this if you want to manually manage the `opentips` package in a virtualenv of
 
 ## Installer command
 
-You can initiate the automatic installer by running the command "OpenTip: Install opentips Python Package".
+You can initiate the automatic installer by running the command "OpenTips: Install opentips Python Package".
