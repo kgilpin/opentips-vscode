@@ -3,9 +3,9 @@
 - [ ] Get tips for a selection
 - [ ] When refreshing tips, prune the tip list to an appropriate limit
 - [ ] After upgrading the opentips package, restart the opentips RPC service.
-- [ ] When the user manually refreshes the tips, show a progress indicator message.
 - [ ] Figure out how to embed commands as Buttons in the walkthrough pages.
 - [ ] Auto-update the opentips package when a new version is available.
+- [x] When the user manually refreshes the tips, show a progress indicator message.
 - [x] (bug) "OpenTips - Open Service Installation Walkthrough" opens the generic list of VSCode walkthroughs.
 - [x] Update decoration text color for light mode
 - [x] Update Marketplace listing icon
