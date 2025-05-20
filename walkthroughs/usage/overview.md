@@ -9,6 +9,6 @@ To use OpenTips, create a Git-based workspace:
 - Install Git for Linux using your package manager
 - Verify Git installation using `git --version`
 
-Your workspace should have a base branch named `main` or `master`.
+Your workspace should have a base branch named `main`, `master`, or `develop`.
 
 Once you start making code changes, OpenTips will provide suggestions based on those code changes relative to the base branch.

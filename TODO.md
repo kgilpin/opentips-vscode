@@ -1,13 +1,8 @@
 ## VSCode
 
 - [ ] Auto-update the opentips package when a new version is available.
-- [ ] (bug) "OpenTips - Open Service Installation Walkthrough" opens the generic list of VSCode walkthroughs.
 - [ ] When the user manually refreshes the tips, show a progress indicator message.
 - [ ] Figure out how to embed commands as Buttons in the walkthrough pages.
-- [ ] Deprecate this by installing Python automatically:
-  > Once you've selected the Python interpreter, run the command Python: Create Terminal from the Command Palette (Ctrl+Shift+P) or (Cmd+Shift+P) to open a terminal with the selected Python interpreter:
-- [ ] Show Markdown Preview of each tip rather than a text document?
-- [ ] Backend accepts delete_after_apply parameter in apply_tip. Frontend doesn't pass this parameter.
 - [ ] Add event types. Example:
 
 ```typescript
@@ -20,6 +15,7 @@ interface TipDeletedEvent {
 }
 ```
 
+- [x] (bug) "OpenTips - Open Service Installation Walkthrough" opens the generic list of VSCode walkthroughs.
 - [x] Update decoration text color for light mode
 - [x] Update Marketplace listing icon
 - [x] Update the tip list image on the marketplace page
@@ -40,6 +36,13 @@ interface TipDeletedEvent {
       present, hide or even dismiss the tip.
 - [x] Show the number of available tips in the Activity bar (and in the status bar?). This will give the user a sense of how many
       tips are available, and give them a way to navigate to the tip list.
+
+## Consider
+
+- [ ] Deprecate this by installing Python automatically:
+  > Once you've selected the Python interpreter, run the command Python: Create Terminal from the Command Palette (Ctrl+Shift+P) or (Cmd+Shift+P) to open a terminal with the selected Python interpreter:
+- [ ] Show Markdown Preview of each tip rather than a text document?
+- [ ] Backend accepts delete_after_apply parameter in apply_tip. Frontend doesn't pass this parameter.
 
 ## Use TypeScript event types
 

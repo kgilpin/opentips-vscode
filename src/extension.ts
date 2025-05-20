@@ -23,7 +23,7 @@ import { enrollRpcProcess } from "./extension-point/rpc-process";
 import { rpcPortSetting, watchRpcPortSetting } from "./settings";
 import { IAppEvents } from "./app-events";
 import { enrollRefreshTips } from "./refresh-tips";
-import { enrollShowComponents } from "./show-component";
+import { enrollOpenWalkthrough } from "./open-walkthrough";
 import complete, { isCopilotLMProviderAvailable } from "./message-completion";
 import { enrollInstallPackage } from "./install-package";
 import { locateServiceDirectoryVirtualEnvDir } from "./configuration";
@@ -163,7 +163,7 @@ export async function activate(context: vscode.ExtensionContext) {
   APP.tipsModel = tipsModel;
 
   enrollOutput(context);
-  enrollShowComponents(context);
+  enrollOpenWalkthrough(context);
   enrollOpenTip(context);
   enrollApplyTip(context, APP);
   enrollDeleteTip(context);
