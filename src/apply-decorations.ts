@@ -2,9 +2,11 @@ import * as vscode from "vscode";
 import { Tip } from "./tips";
 import { locateTip } from "./locate-tip";
 
-const TIP_BACKGROUND_COLOR = "rgba(255, 100, 100, 0.5)";
-const TIP_LABEL_DARK_COLOR = "rgba(200, 200, 200, 0.5)";
-const TIP_LABEL_LIGHT_COLOR = "rgba(254, 235, 238, 1.0)";
+const TIP_BACKGROUND_DARK_COLOR = "rgba(180, 50, 50, 0.4)";
+const TIP_BACKGROUND_LIGHT_COLOR = "rgba(255, 150, 150, 0.4)";
+
+const TIP_LABEL_DARK_COLOR = "rgba(200, 200, 200, 0.6)";
+const TIP_LABEL_LIGHT_COLOR = "rgba(150, 105, 115, 0.6)";
 
 // The LLM is not that good at identifying the specific line of a change, so we search for the context within a pretty wide radius.
 export const TIP_CONTEXT_SEARCH_RADIUS = 30;
@@ -23,7 +25,12 @@ export type TipDecorations = {
 export function enrollApplyDecorations(context: vscode.ExtensionContext, tipsProvider: TipsProvider): TipDecorations {
   // NOTE: This also accepts light/dark theme options.
   const decorationType = vscode.window.createTextEditorDecorationType({
-    backgroundColor: TIP_BACKGROUND_COLOR,
+    dark: {
+      backgroundColor: TIP_BACKGROUND_DARK_COLOR,
+    },
+    light: {
+      backgroundColor: TIP_BACKGROUND_LIGHT_COLOR,
+    },
     isWholeLine: true,
   });
 
