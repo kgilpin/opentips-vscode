@@ -1,4 +1,5 @@
-By default, OpenTips will automatically install the `opentips` package to `$HOME/.opentips`. 
+By default, OpenTips will automatically install the `opentips` package to your platform-appropriate
+application data directory, as determined by the [@folder/xdg](https://github.com/folder/xdg) package.
 
 ![Installing opentips package](./images/installing-opentips.png)
 

@@ -1,5 +1,7 @@
 ## VSCode
 
+- [ ] Get tips for a selection
+- [ ] When refreshing tips, prune the tip list to an appropriate limit
 - [ ] Auto-update the opentips package when a new version is available.
 - [ ] When the user manually refreshes the tips, show a progress indicator message.
 - [ ] Figure out how to embed commands as Buttons in the walkthrough pages.
