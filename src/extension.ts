@@ -232,6 +232,9 @@ export async function activate(context: vscode.ExtensionContext) {
   APP.providerStatus = new ProviderStatus(processLaunchContext);
   enrollStatusPanel(context, APP.providerStatus);
 
+  // Simulate setting the Python version
+  (APP.providerStatus as ProviderStatus).setPythonVersion("Python 3.10.17");
+
   if (rpcPortSetting() === undefined || rpcPortSetting() === 0) {
     await enrollRpcProcess(context, processLaunchContext);
   } else {

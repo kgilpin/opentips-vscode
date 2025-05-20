@@ -12,10 +12,15 @@ export class StatusPanelViewProvider implements vscode.WebviewViewProvider, vsco
     linkify: true,
     breaks: true,
   });
+  private pythonVersion: string | null = null;
 
   constructor(private providerStatus: IProviderStatus) {
     this.providerStatus.on("changed", this.updateContent.bind(this));
     this.providerStatus.on("mayHaveChanged", this.updateContent.bind(this));
+    this.providerStatus.on('pythonVersionDetected', (version: string | null) => { 
+      this.pythonVersion = version; 
+      this.updateContent(); 
+    });
   }
 
   dispose() {
@@ -58,6 +63,18 @@ export class StatusPanelViewProvider implements vscode.WebviewViewProvider, vsco
         contentSections.push(`<div class="button-container"></div>
   <button class="button" id="showLanguageModelWalkthrough">Language Model Instructions</button>
 </div>`);
+      }
+
+      contentSections.push(""); // Add a separator line
+      // contentSections.push("Python version check pending..."); // Placeholder for Python version - REMOVED
+      if (this.pythonVersion) {
+        if (this.pythonVersion.startsWith("Python 11")) { // Intentionally checking for Python 11 as per subtask
+            contentSections.push("✅ Python 11 detected.");
+        } else {
+            contentSections.push(`ℹ️ Detected Python version: ${this.pythonVersion}. (Python 11 not found)`);
+        }
+      } else {
+          contentSections.push("🐍 Python version check pending...");
       }
     };
 

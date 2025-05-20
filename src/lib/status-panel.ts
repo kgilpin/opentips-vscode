@@ -7,6 +7,7 @@ export type ITimeoutStatusLoadingEvents = {
 
 export type IProviderStatusEvents = {
   changed: () => void;
+  pythonVersionDetected: (version: string | null) => void;
 };
 
 export interface IProviderStatus extends EventEmitter {
@@ -27,6 +28,7 @@ export class ProviderStatus extends EventEmitter implements IProviderStatus {
   private _startingTimeout: NodeJS.Timeout | undefined;
   private _pollingInterval: NodeJS.Timeout | undefined;
   private portsByFolder = new Map<string, number | undefined>();
+  private _pythonVersion: string | null = null;
 
   constructor(private launchContext: IRPCProcessLaunchContext) {
     super();
@@ -86,5 +88,14 @@ export class ProviderStatus extends EventEmitter implements IProviderStatus {
 
   private get anyFolderHasPort(): boolean {
     return [...this.portsByFolder.values()].some((port) => port !== undefined);
+  }
+
+  get pythonVersion(): string | null {
+    return this._pythonVersion;
+  }
+
+  setPythonVersion(version: string | null): void {
+    this._pythonVersion = version;
+    this.emit("pythonVersionDetected", version);
   }
 }
