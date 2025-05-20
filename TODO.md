@@ -2,7 +2,7 @@
 
 - [ ] Get tips for a selection
 - [ ] When refreshing tips, prune the tip list to an appropriate limit
-- [ ] Auto-update the opentips package when a new version is available.
+- [ ] After upgrading the opentips package, restart the opentips RPC service.
 - [ ] When the user manually refreshes the tips, show a progress indicator message.
 - [ ] Figure out how to embed commands as Buttons in the walkthrough pages.
 - [ ] Auto-update the opentips package when a new version is available.
@@ -29,6 +29,18 @@
       tips are available, and give them a way to navigate to the tip list.
 
 ## Consider
+
+- [ ] Add event types. Example:
+
+```typescript
+interface TipDeletedEvent {
+  type: "tip_deleted";
+  data: {
+    tip_id: string;
+    reason: string;
+  };
+}
+```
 
 - [ ] Deprecate this by installing Python automatically:
   > Once you've selected the Python interpreter, run the command Python: Create Terminal from the Command Palette (Ctrl+Shift+P) or (Cmd+Shift+P) to open a terminal with the selected Python interpreter:

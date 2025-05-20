@@ -1,8 +1,8 @@
-import { APP } from "./extension";
 import { logger } from "./extension-point/logger";
 import invokeWithErrorReporting from "./report-error";
 import resolveWorkspaceFolder from "./resolve-workspace-folder";
 import { OpenTipsJSONRPCClient } from "./rpc-client";
+import newRpcClient from "./new-rpc-client";
 
 export type TipId = {
   version: string;
@@ -80,7 +80,7 @@ export class Tips {
 
   static async listTips(directory: string, limit?: number) {
     // TIPS invokeRPC is not needed here
-    const rpcClient = APP.newRpcClient(directory);
+    const rpcClient = newRpcClient(directory);
     if (!rpcClient) {
       return;
     }
@@ -90,7 +90,7 @@ export class Tips {
 
   static async suggest(directory: string) {
     // TIPS invokeRPC is not needed here
-    const rpcClient = APP.newRpcClient(directory);
+    const rpcClient = newRpcClient(directory);
     if (!rpcClient) {
       return;
     }
@@ -134,7 +134,7 @@ export class Tips {
       return Promise.resolve(undefined);
     }
 
-    const rpcClient = APP.newRpcClient(folder.uri.fsPath);
+    const rpcClient = newRpcClient(folder.uri.fsPath);
     if (!rpcClient) {
       return Promise.resolve(undefined);
     }

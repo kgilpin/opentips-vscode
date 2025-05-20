@@ -1,4 +1,4 @@
-import { JSONRPCClient } from "json-rpc-2.0";
+import { JSONRPCClient, JSONRPCResponse } from "json-rpc-2.0";
 
 import EventEmitter from "events";
 import { logger } from "./extension-point/logger";
@@ -33,28 +33,28 @@ function patchTip(tipData: Partial<Tip>): Tip {
 export class OpenTipsJSONRPCClient {
   client: JSONRPCClient<void>;
 
-  constructor(port: number) {
-    const client = new JSONRPCClient(async (jsonRPCRequest): Promise<void> => {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+  constructor(port: number, timeout: number = FETCH_TIMEOUT) {
+    const client = new JSONRPCClient(
+      async (jsonRPCRequest): Promise<void> =>
+        fetch(`http://localhost:${port}/rpc`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(jsonRPCRequest),
+        }).then((response: Response) => {
+          if (response.status === 200) {
+            // Use client.receive when you received a JSON-RPC response.
+            return response
+              .json()
+              .then((jsonRPCResponse) => client.receive(jsonRPCResponse as JSONRPCResponse | JSONRPCResponse[]));
+          }
 
-      return fetch(`http://localhost:${port}/rpc`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(jsonRPCRequest),
-        signal: controller.signal,
-      }).then((response) => {
-        clearTimeout(timeoutId);
-        if (response.status === 200) {
-          // Use client.receive when you received a JSON-RPC response.
-          return response.json().then((jsonRPCResponse: any) => client.receive(jsonRPCResponse));
-        } else if (jsonRPCRequest.id !== undefined) {
-          return Promise.reject(new Error(response.statusText));
-        }
-      });
-    });
+          return Promise.reject(new Error(response.statusText ?? "Unknown error"));
+        })
+    );
+
+    client.timeout(timeout);
     this.client = client;
   }
 
