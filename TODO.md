@@ -20,6 +20,7 @@ interface TipDeletedEvent {
 }
 ```
 
+- [x] Update decoration text color for light mode
 - [x] Update Marketplace listing icon
 - [x] Update the tip list image on the marketplace page
 - [x] Provide status feedback on the service operational status
