@@ -11,7 +11,7 @@
     "ms-python.python"
   ],
   "license": "GPL-3.0-only",
-  "icon": "resources/sun.png",
+  "icon": "resources/sun_icon.png",
   "repository": "https://github.com/kgilpin/opentips-vscode",
   "homepage": "https://github.com/kgilpin/opentips-vscode",
   "categories": [
@@ -30,7 +30,7 @@
         {
           "id": "opentips-panel",
           "title": "OpenTips - Realtime Code Review",
-          "icon": "resources/sun.svg",
+          "icon": "resources/sun_currentColor.svg",
           "badge": {
             "tooltip": "Number of available suggestions"
           }
