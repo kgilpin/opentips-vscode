@@ -2,7 +2,7 @@
   "name": "opentips",
   "displayName": "OpenTips - Realtime Code Review",
   "description": "Get AI-powered code review suggestions for your project, as you code",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "engines": {
     "vscode": "^1.96.0",
     "node": "^22.13.1"

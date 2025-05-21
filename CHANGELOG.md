@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/kgilpin/opentips-vscode/compare/v1.7.0...v1.8.0) (2025-05-21)
+
+
+### Features
+
+* Add tip delay user setting ([fea13a3](https://github.com/kgilpin/opentips-vscode/commit/fea13a3fc22688eb4ba4567f62050f1f4c100ac8))
+
 # [1.7.0](https://github.com/kgilpin/opentips-vscode/compare/v1.6.0...v1.7.0) (2025-05-20)
 
 
