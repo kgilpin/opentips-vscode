@@ -6,6 +6,7 @@
 - [ ] Figure out how to embed commands as Buttons in the walkthrough pages.
 - [ ] Auto-update the opentips package when a new version is available.
 - [ ] The VSIX file that's uploaded to GitHub releases by semantic release seems to have the older/previous version number embedded in the package JSON.
+- [x] User configurable tip delay
 - [x] Add ability to move a suggestion to TODO.md or a code comment.
 - [x] When the user manually refreshes the tips, show a progress indicator message.
 - [x] (bug) "OpenTips - Open Service Installation Walkthrough" opens the generic list of VSCode walkthroughs.

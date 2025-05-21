@@ -8,7 +8,6 @@ import {
   SpawnedProcess,
   IRPCProcessLaunchContext,
 } from "../types/rpc-process";
-import { IFileSystem } from "../types/system";
 
 export function isRPCProcessLaunchError(
   obj: RPCProcessLaunchError | VirtualenvRpcProcess
@@ -159,7 +158,17 @@ export async function launchRpcProcess(
   context.logger(`[rpc-process]   ANTHROPIC_API_KEY: ${anthropicApiKey ? "set" : "not set"}`);
 
   try {
-    const osProcess = context.spawn(pythonProgram, ["-m", moduleName, "-p", "0"], {
+    const tipDelay = context.getTipDelay();
+    const args = ["-m", moduleName, "-p", "0"];
+    
+    // Add tip delay argument if it's available
+    if (tipDelay !== undefined) {
+      args.push("--tip_delay", tipDelay.toString());
+    }
+    
+    context.logger(`[rpc-process]   args:              ${args.join(' ')}`);
+    
+    const osProcess = context.spawn(pythonProgram, args, {
       shell: isWindows(),
       cwd: workspaceFolder,
       env,

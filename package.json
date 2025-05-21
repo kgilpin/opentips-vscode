@@ -130,6 +130,11 @@
           "type": "boolean",
           "description": "Install the 'opentips' service package globally to the application data directory",
           "default": true
+        },
+        "opentips.tipDelay": {
+          "type": "number",
+          "description": "Delay in seconds after code changes before processing tips",
+          "default": 30
         }
       }
     },

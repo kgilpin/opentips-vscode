@@ -37,6 +37,7 @@ describe("RPC Process Manager Test Suite", () => {
         currentPort = port;
       },
       onError: mockOnError,
+      getTipDelay: () => undefined,
     };
 
     manager = new RpcProcessManager(mockContext, mockLogger);

@@ -75,6 +75,7 @@ export function enrollApplyDecorations(context: vscode.ExtensionContext, tipsPro
         return {
           range,
           hoverMessage,
+          // TODO: (code-duplication) The renderOptions object has duplicate properties for dark and light themes - extract common values like margin and contentText into a shared object to reduce duplication.
           renderOptions: {
             dark: {
               after: {
