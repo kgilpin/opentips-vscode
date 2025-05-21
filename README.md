@@ -148,6 +148,8 @@ Once you've opened the Command Palette, start typing "OpenTips" to see the avail
 - **OpenTips: Show Anthropic API Key Status** - Check if your Claude API key is configured and valid
 - **OpenTips: Clear Anthropic API Key** - Remove your stored Claude API key
 
+All API keys are securely stored in [VS Code Secrets Storage](https://code.visualstudio.com/api/references/vscode-api#SecretStorage), which provides encrypted storage for sensitive data. Your API keys are never stored in plain text or exposed in configuration files.
+
 ## Settings
 
 #### `Opentips: Tip Delay`
