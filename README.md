@@ -148,6 +148,16 @@ Once you've opened the Command Palette, start typing "OpenTips" to see the avail
 - **OpenTips: Show Anthropic API Key Status** - Check if your Claude API key is configured and valid
 - **OpenTips: Clear Anthropic API Key** - Remove your stored Claude API key
 
+All API keys are securely stored in [VS Code Secrets Storage](https://code.visualstudio.com/api/references/vscode-api#SecretStorage), which provides encrypted storage for sensitive data. Your API keys are never stored in plain text or exposed in configuration files.
+
+## Settings
+
+#### `Opentips: Tip Delay`
+
+Configure how long OpenTips waits after you stop typing before starting to suggest tips. The setting value is expressed in seconds, and the default is 30 seconds.
+
+By shortening the delay, the suggestions will respond more quickly to your coding changes. However, you may get suggestions on work-in-progress code that isn't ready for review yet. You can adjust this setting until it feels optimal for your workflow.
+
 ## Output
 
 OpenTips provides output channels where you can see logs and debug information. You can access these output channels by looking for the `Output` tab in the bottom panel of the editor. You'll see two channels related to OpenTips:

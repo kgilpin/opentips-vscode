@@ -47,6 +47,7 @@ export interface IRPCProcessLaunchContext {
   getAnthropicApiKey: () => Promise<string | undefined>;
   isCopilotLMProviderAvailable: () => Promise<boolean>;
   spawn(command: string, args?: readonly string[], options?: SpawnOptions): SpawnedProcess;
+  getTipDelay: () => number | undefined;
 
   onPortChanged(workspaceFolder: string, port: number | undefined): void;
   onError(rpcProcess: RPCProcessLaunchError): RPCProcessLaunchContextErrorAction;

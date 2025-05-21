@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
 import { VirtualenvRpcProcess, isRPCProcessLaunchError, launchRpcProcess } from "../lib/rpc-process";
 import { RPCProcessLaunchContextErrorAction, RPCProcessLaunchErrorCode, SpawnedProcess } from "../types/rpc-process";
+import { get } from "http";
 
 class MockSpawnedProcess extends EventEmitter implements SpawnedProcess {
   killed = false;
@@ -25,6 +26,7 @@ describe("RPC Process Test Suite", () => {
       spawn: () => new MockSpawnedProcess(),
       onPortChanged: jest.fn(),
       onError: () => RPCProcessLaunchContextErrorAction.Restart,
+      getTipDelay: () => undefined,
     };
   });
 

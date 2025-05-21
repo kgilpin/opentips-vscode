@@ -20,7 +20,7 @@ import {
   SpawnOptions,
 } from "./types/rpc-process";
 import { enrollRpcProcess } from "./extension-point/rpc-process";
-import { rpcPortSetting, watchRpcPortSetting } from "./settings";
+import { getTipDelaySetting, rpcPortSetting, watchRpcPortSetting } from "./settings";
 import { IAppEvents } from "./app-events";
 import { enrollRefreshTips } from "./refresh-tips";
 import { enrollOpenWalkthrough } from "./open-walkthrough";
@@ -227,6 +227,7 @@ export async function activate(context: vscode.ExtensionContext) {
     logger,
     rpcLogger,
     spawn: spawnChildProcess,
+    getTipDelay: getTipDelaySetting,
   };
 
   APP.providerStatus = new ProviderStatus(processLaunchContext);
